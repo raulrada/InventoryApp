@@ -1,9 +1,11 @@
 package udacityscholarship.rada.raul.inventoryapp.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,28 +16,24 @@ import android.support.annotation.Nullable;
 public class ProductProvider extends ContentProvider {
 
     /**
-     * Database helper object that will provide us access to the database
-     */
-    private ProductDbHelper productDbHelper;
-
-    /**
      * URI matcher code for the content URI for the products table
      */
     private static final int PRODUCTS = 10;
-
     /**
      * URI matcher code for the content URI for a single product in the products table
      */
     private static final int PRODUCT_ID = 11;
-
     private static final String URI_INDIVIDUAL_PRODUCT_CONSTRUCTOR = "/#";
-
     /**
      * UriMatcher object to match a content URI to a corresponding code.
      * The input passed into the constructor represents the code to return for the root URI.
      * It's common to use NO_MATCH as the input for this case.
      */
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    /**
+     * placeholder for single product selection, used in the query method of {@link ProductProvider}
+     */
+    private static String SINGLE_PRODUCT_PLACEHOLDER = "=?";
 
     // Static initializer. This is run the first time anything is called from this class.
     static {
@@ -65,6 +63,11 @@ public class ProductProvider extends ContentProvider {
     }
 
     /**
+     * Database helper object that will provide us access to the database
+     */
+    private ProductDbHelper productDbHelper;
+
+    /**
      * Initialize the provider and the database helper object.
      */
     @Override
@@ -74,11 +77,60 @@ public class ProductProvider extends ContentProvider {
     }
 
     /**
-     * Perform the query for the given URI. Use the given projection, selection, selection arguments, and sort order.
+     * Perform the query for the given URI. Use the given projection, selection,
+     * selection arguments, and sort order.
      */
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
+
+
+        // Create and/or open a database to read from it
+        SQLiteDatabase db = productDbHelper.getReadableDatabase();
+
+        // This cursor will hold the result of the query
+        Cursor cursor;
+
+        // Figure out if the URI matcher can match the URI to a specific code
+        int uriMatch = sUriMatcher.match(uri);
+
+        switch (uriMatch) {
+            case PRODUCTS:
+                /**
+                 * For the {@link PRODUCTS} code, query the products table directly with the given
+                 // projection, selection, selection arguments, and sort order. The cursor
+                 // could contain multiple rows of the products table.
+                 */
+                cursor = db.query(ProductContract.ProductEntry.TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+                break;
+
+            case PRODUCT_ID:
+                /**
+                 * For the {@link PRODUCT_ID} code, extract out the ID from the URI.
+                 * For an example URI such as
+                 * "content://udacityscholarship.rada.raul.inventoryapp/products/3",
+                 * the selection will be "_id=?" and the selection argument will be a
+                 * String array containing the actual ID of 3 in this case.
+                 * For every "?" in the selection, we need to have an element in the
+                 * selection arguments that will fill in the "?". Since we have 1 question mark
+                 * in the selection, we have 1 String in the selection arguments' String array.
+                 */
+                selection = ProductContract.ProductEntry._ID + SINGLE_PRODUCT_PLACEHOLDER;
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+                /**
+                 * This will perform a query on the pets table where the _id equals 3 to return a
+                 // Cursor containing that row of the table.
+                 */
+                cursor = db.query(ProductContract.ProductEntry.TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Cannot query unknown URI " + uri);
+        }
+        return cursor;
     }
 
     /**
