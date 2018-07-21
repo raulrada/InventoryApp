@@ -44,7 +44,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
      * Type of data introduced in column headed by COLUMN_PRODUCT_SUPPLIER and related constraints
      */
     private static final String PRODUCT_SUPPLIER_TYPE_AND_CONSTRAINTS =
-            " STRING NOT NULL DEFAULT \"n/a\"";
+            " TEXT NOT NULL DEFAULT \"n/a\"";
 
     /**
      * Type of data introduced in column headed by COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER and

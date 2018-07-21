@@ -21,7 +21,11 @@
         <activity
             android:name=".InsertProductActivity"
             android:label="@string/insert_product_activity_label"
-            android:parentActivityName=".InventoryActivity"></activity>
+            android:parentActivityName=".InventoryActivity"/>
+        <provider
+            android:authorities="udacityscholarship.rada.raul.inventoryapp"
+            android:name=".data.ProductProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
