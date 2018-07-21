@@ -22,7 +22,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
     /**
      * Type of data introduced in column headed by _ID and related constraints
      */
-    private static final String _ID_TYPE_AND_CONSTRAINTS = " INTEGER PRIMARY KEY AUTOINCREMENT";
+    private static final String ID_TYPE_AND_CONSTRAINTS = " INTEGER PRIMARY KEY AUTOINCREMENT";
 
     /**
      * Type of data introduced in column headed by COLUMN_PRODUCT_NAME and related constraints
@@ -51,7 +51,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
      * related constraints
      */
     private static final String PRODUCT_SUPPLIER_PHONE_NUMBER_TYPE_AND_CONSTRAINTS =
-            " STRING NOT NULL DEFAULT \"n/a\"";
+            " TEXT NOT NULL DEFAULT \"n/a\"";
 
     /**
      * Create a helper object to create, open, and/or manage a database.
@@ -70,7 +70,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         // Create a String that contains the SQL statement to create the products table
         String SQL_CREATE_PRODUCTS_TABLE = "CREATE TABLE " +
                 ProductContract.ProductEntry.TABLE_NAME + " (" +
-                ProductContract.ProductEntry._ID + _ID_TYPE_AND_CONSTRAINTS + ", " +
+                ProductContract.ProductEntry._ID + ID_TYPE_AND_CONSTRAINTS + ", " +
                 ProductContract.ProductEntry.COLUMN_PRODUCT_NAME +
                 PRODUCT_NAME_TYPE_AND_CONSTRAINTS + ", " +
                 ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE +

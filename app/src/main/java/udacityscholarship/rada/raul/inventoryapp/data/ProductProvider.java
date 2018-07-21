@@ -13,13 +13,16 @@ import android.support.annotation.Nullable;
 public class ProductProvider extends ContentProvider {
 
     /**
+     * Database helper object that will provide us access to the database
+     */
+    private ProductDbHelper productDbHelper;
+
+    /**
      * Initialize the provider and the database helper object.
      */
     @Override
     public boolean onCreate() {
-        // TODO: Create and initialize a ProductDbHelper object to gain access to the inventory database.
-        // Make sure the variable is a global variable, so it can be referenced from other
-        // ContentProvider methods.
+        productDbHelper = new ProductDbHelper(getContext());
         return true;
     }
 

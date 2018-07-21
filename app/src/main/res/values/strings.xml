@@ -8,4 +8,5 @@
     <string name="action_insert_products">Insert products</string>
     <string name="action_insert_individual_product">Insert individual products</string>
     <string name="action_insert_dummy_products">Insert dummy products</string>
+
 </resources>

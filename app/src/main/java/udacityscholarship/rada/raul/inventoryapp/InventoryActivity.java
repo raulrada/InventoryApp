@@ -70,6 +70,10 @@ public class InventoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
 
+        //set activity label programatically, instead of within AndroidManifest, in order to have
+        //a different app label displayed on user's device vs. the label of the launcher activity
+        getSupportActionBar().setTitle(R.string.inventory_activity_label);
+
         /**
          * In order to work with the database, instantiate ProductDbHelper and pass the context,
          * which is the current activity.
