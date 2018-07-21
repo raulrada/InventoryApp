@@ -1,5 +1,6 @@
 package udacityscholarship.rada.raul.inventoryapp.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,6 +8,35 @@ import android.provider.BaseColumns;
  * class defined as final to prevent sub-classing
  */
 public final class ProductContract {
+
+    /**
+     * The "Content authority" is a name for the entire content provider, similar to the
+     * relationship between a domain name and its website.  A convenient string to use for the
+     * content authority is the package name for the app, which is guaranteed to be unique on the
+     * device. The String is hardcoded, as it does not need to be displayed to the user /
+     * translated.
+     */
+    public static final String CONTENT_AUTHORITY ="udacityscholarship.rada.raul.inventoryapp";
+
+    /**
+     * Scheme part of the content URI
+     */
+    public static final String URI_SCHEME = "content://";
+
+    /**
+     * Use URI_SCHEME and CONTENT_AUTHORITY to create the base of all URI's which apps will
+     * use to contact the content provider.
+     */
+    public static final Uri BASE_CONTENT_URI = Uri.parse(URI_SCHEME + CONTENT_AUTHORITY);
+
+    /**
+     * Possible path (appended to base content URI for possible URI's)
+     * For instance, content://udacityscholarship.rada.raul.inventoryapp/products is a valid path
+     * for looking at product data. content://udacityscholarship.rada.raul.inventoryapp/objects/
+     * will fail, as the ContentProvider hasn't been given any information on what to do
+     * with "objects".
+     */
+    public static final String PATH_PRODUCTS = "products";
 
     /**
      * Empty private constructor to prevent the instantiation of ProductContract class.
@@ -19,6 +49,9 @@ public final class ProductContract {
      * BlankEntry for the products table in the database.
      */
     public static final class ProductEntry implements BaseColumns {
+
+        /** The content URI to access the product data in the provider */
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
 
         /**
          * Name of the database table for products
