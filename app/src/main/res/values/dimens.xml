@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- EditText dimensions -->
+    <dimen name="editTextMarginStart">20dp</dimen>
+    <dimen name="editTextMarginEnd">20dp</dimen>
+    <dimen name="editTextMarginTop">10dp</dimen>
+    <dimen name="editTextMarginBottom">0dp</dimen>
+    <dimen name="editTextSize">17sp</dimen>
+
+</resources>

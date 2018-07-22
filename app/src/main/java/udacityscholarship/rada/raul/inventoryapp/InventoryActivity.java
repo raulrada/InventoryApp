@@ -89,9 +89,6 @@ public class InventoryActivity extends AppCompatActivity {
      */
     private void displayDatabaseInfo() {
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = productDbHelper.getReadableDatabase();
-
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -103,16 +100,8 @@ public class InventoryActivity extends AppCompatActivity {
                 ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
         };
 
-        // perform query on the products table
-        Cursor cursor = db.query(
-                ProductContract.ProductEntry.TABLE_NAME,    // The table to query
-                projection,                                 // The columns to be returned from the query
-                null,                               // The columns for the WHERE clause
-                null,                            // The values for the WHERE clause
-                null,                               // Don't group the rows
-                null,                                // Don't filter by row groups
-                null                                // The sort order
-        );
+        Cursor cursor = getContentResolver().query(ProductContract.ProductEntry.CONTENT_URI,
+                projection, null, null, null);
 
         try {
             // Create a header in the Text View that looks like this:

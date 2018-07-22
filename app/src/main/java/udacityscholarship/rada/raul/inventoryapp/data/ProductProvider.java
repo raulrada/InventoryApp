@@ -114,13 +114,17 @@ public class ProductProvider extends ContentProvider {
                  * String array containing the actual ID of 3 in this case.
                  * For every "?" in the selection, we need to have an element in the
                  * selection arguments that will fill in the "?". Since we have 1 question mark
-                 * in the selection, we have 1 String in the selection arguments' String array.
+                 * in the selection, we have 1 String in the selection arguments' String array
+                 * (in our example, the selection arguments shall be {"3"}).
                  */
                 selection = ProductContract.ProductEntry._ID + SINGLE_PRODUCT_PLACEHOLDER;
+                // ContentUris.parseId(uri) converts the last segment of the URI path to a number -
+                // for instance, 3. Then, this number is converted into a String using
+                // String.valueOf().
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
                 /**
-                 * This will perform a query on the pets table where the _id equals 3 to return a
+                 * This will perform a query on the products table where the _id equals 3 to return a
                  // Cursor containing that row of the table.
                  */
                 cursor = db.query(ProductContract.ProductEntry.TABLE_NAME, projection, selection,
@@ -137,7 +141,7 @@ public class ProductProvider extends ContentProvider {
      * Returns the MIME type of data for the content URI.
      */
     @Override
-    public String getType(@NonNull Uri uri) {
+    public String getType(Uri uri) {
         return null;
     }
 

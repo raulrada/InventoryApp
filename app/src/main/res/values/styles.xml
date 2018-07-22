@@ -7,5 +7,33 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    
+    <style name="text"  parent="@style/TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="text.editText" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/editTextMarginStart</item>
+        <item name="android:layout_marginEnd">@dimen/editTextMarginEnd</item>
+        <item name="android:layout_marginTop">@dimen/editTextMarginTop</item>
+        <item name="android:layout_marginBottom">@dimen/editTextMarginBottom</item>
+        <item name="android:textSize">@dimen/editTextSize</item>
+        <item name="android:gravity">center</item>
+        <item name="android:imeOptions">flagNoExtractUi</item>
+    </style>
+
+    <style name="text.editText.textInput">
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="text.editText.numberInput">
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="text.editText.phoneInput">
+        <item name="android:inputType">phone</item>
+    </style>
 
 </resources>
