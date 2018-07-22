@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -49,16 +50,6 @@ public class InventoryActivity extends AppCompatActivity {
      * Constant value for maximum quantity of a dummy product
      */
     private static final int PRODUCT_MAX_QUANTITY = 10;
-    /**
-     * Constant value showing that all previous entries should be deleted from the products table
-     * when inserting dummy data.
-     */
-    private static final boolean DELETE_PREVIOUS_ENTRIES = true;
-    /**
-     * Constant value showing that a successful entry in the products table does not need to be
-     * confirmed when inserting dummy data.
-     */
-    private static final boolean CONFIRM_TABLE_ENTRY = false;
     /**
      * Database helper that will provide us access to the database
      */
@@ -158,14 +149,9 @@ public class InventoryActivity extends AppCompatActivity {
      * @param productSupplier            supplier of the product
      * @param productSupplierPhoneNumber phone number of the product supplier
      *                                   entries - only when the user chooses to enter dummy data
-     * @param confirmSuccessfulEntry     switch value showing whether the successful entry in the
-     *                                   database should be confirmed or not - meaningful only when
-     *                                   inserting real products, as the dummy products should not
-     *                                   create problems.
      */
     public void insertProduct(String productName, int productPrice, int productQuantity,
-                              String productSupplier, String productSupplierPhoneNumber,
-                              boolean confirmSuccessfulEntry) {
+                              String productSupplier, String productSupplierPhoneNumber) {
 
         // gets a database in write mode
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
@@ -179,25 +165,20 @@ public class InventoryActivity extends AppCompatActivity {
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER, productSupplier);
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, productSupplierPhoneNumber);
 
-        // Insert a new row for the product in the database, returning the ID of that new row.
-        // The first argument for db.insert() is the products table name.
-        // The second argument provides the name of a column in which the framework
-        // can insert NULL in the event that the ContentValues is empty (if
-        // this is set to "null", then the framework will not insert a row when
-        // there are no values).
-        // The third argument is the ContentValues object containing the info for the product.
-        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
+        // Insert a new product into the provider, returning the content URI for the
+        // new product.
+        Uri newUri = getContentResolver().insert(
+                ProductContract.ProductEntry.CONTENT_URI, values);
 
-        // check whether the successful entry of a product in the database should be confirmed
-        if (confirmSuccessfulEntry) {
-            // if newRowId == -1, the entry in the database was unsuccessful
-            if (newRowId == -1) {
-                Toast.makeText(this, "Error with saving product",
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Product saved with row id: " + newRowId,
-                        Toast.LENGTH_SHORT).show();
-            }
+        // Show a toast message depending on whether or not the insertion was successful
+        if (newUri == null) {
+            // If the new content URI is null, then there was an error with insertion.
+            Toast.makeText(getApplicationContext(), getString(R.string.product_save_error),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the insertion was successful and we can display a toast.
+            Toast.makeText(getApplicationContext(), getString(R.string.product_save_successful),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -257,7 +238,7 @@ public class InventoryActivity extends AppCompatActivity {
                     int productQuantity = getRandomNumber(PRODUCT_MAX_QUANTITY);
                     String productSupplier = PRODUCT_SUPPLIER + i;
                     insertProduct(productName, productPrice, productQuantity, productSupplier,
-                            PRODUCT_SUPPLIER_PHONE_NUMBER, CONFIRM_TABLE_ENTRY);
+                            PRODUCT_SUPPLIER_PHONE_NUMBER);
                 }
                 displayDatabaseInfo();
                 return true;
