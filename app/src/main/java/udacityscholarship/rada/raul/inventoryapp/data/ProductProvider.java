@@ -9,6 +9,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.net.URI;
+import java.security.Provider;
+
+import udacityscholarship.rada.raul.inventoryapp.R;
 
 /**
  * {@link ContentProvider} for the Inventory app
@@ -34,6 +41,9 @@ public class ProductProvider extends ContentProvider {
      * placeholder for single product selection, used in the query method of {@link ProductProvider}
      */
     private static String SINGLE_PRODUCT_PLACEHOLDER = "=?";
+
+    /** Tag for the log messages */
+    public static final String LOG_TAG = ProductProvider.class.getSimpleName();
 
     // Static initializer. This is run the first time anything is called from this class.
     static {
@@ -150,7 +160,80 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                return insertProduct(uri, values);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+    }
+
+    /**
+     * helper method inserting a product in the database
+     * @param uri general product URI to be used in order to construct the URI for the newly
+     *            inserted product
+     * @param values to be inserted in the database in relation to the product
+     * @return URI for the newly inserted product
+     */
+    private Uri insertProduct(Uri uri, ContentValues values) {
+
+        // Check that the name is not null
+        String productName = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+        if (productName == null){
+            throw new IllegalArgumentException(
+                    getContext().getString(R.string.product_name_required));
+        }
+
+        // Check that product price is not null and that it is positive
+        Integer productPrice = values.getAsInteger
+                (ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+        if (productPrice == null){
+            throw new IllegalArgumentException(
+                    getContext().getString(R.string.product_price_not_null));
+        }
+        if (productPrice<0){
+            throw new IllegalArgumentException(
+                    getContext().getString(R.string.product_price_positive));
+        }
+
+        // If a product quantity is provided, check that it is not negative
+        Integer productQuantity = values.getAsInteger
+                (ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        if (productQuantity != null && productQuantity < 0){
+            throw new IllegalArgumentException(
+                    getContext().getString(R.string.product_quantity_positive));
+        }
+
+        // Check that the name of the supplier is not null
+        String productSupplier = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER);
+        if (productSupplier == null){
+            throw new IllegalArgumentException(
+                    getContext().getString(R.string.product_supplier_required));
+        }
+
+        // Check that the phone number of the supplier is not null
+        String productSupplierPhoneNumber = values.getAsString(
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
+        if (productSupplierPhoneNumber == null){
+            throw new IllegalArgumentException(
+                    getContext().getString(R.string.product_supplier_phone_required));
+        }
+
+        // Get writeable database
+        SQLiteDatabase db = productDbHelper.getWritableDatabase();
+
+        // Insert the new product with the given values
+        long newRowId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
+
+        // If the newRowId is -1, then the insertion failed. Log an error and return null.
+        if (newRowId == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+        // Return the new URI with the newRowId (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, newRowId);
     }
 
     /**
