@@ -102,6 +102,14 @@ public class InsertProductActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.product_save_successful),
                             Toast.LENGTH_SHORT).show();
                 }
+
+                // clear EditTexts once the product was inserted, to facilitate the insertion of a
+                // new product.
+                productNameEditText.setText("");
+                productPriceEditText.setText("");
+                productQuantityEditText.setText("");
+                productSupplierEditText.setText("");
+                productSupplierPhoneEditText.setText("");
             }
         });
     }

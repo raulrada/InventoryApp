@@ -5,7 +5,6 @@ package udacityscholarship.rada.raul.inventoryapp;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 import java.util.Random;
 
 import udacityscholarship.rada.raul.inventoryapp.data.ProductContract;
-import udacityscholarship.rada.raul.inventoryapp.data.ProductDbHelper;
 
 /**
  * Main activity of the app. Shows a list of available products and permits navigation to other
@@ -50,10 +48,7 @@ public class InventoryActivity extends AppCompatActivity {
      * Constant value for maximum quantity of a dummy product
      */
     private static final int PRODUCT_MAX_QUANTITY = 10;
-    /**
-     * Database helper that will provide us access to the database
-     */
-    private ProductDbHelper productDbHelper;
+
     private TextView tableContentTextView;
 
     @Override
@@ -64,12 +59,6 @@ public class InventoryActivity extends AppCompatActivity {
         //set activity label programatically, instead of within AndroidManifest, in order to have
         //a different app label displayed on user's device vs. the label of the launcher activity
         getSupportActionBar().setTitle(R.string.inventory_activity_label);
-
-        /**
-         * In order to work with the database, instantiate ProductDbHelper and pass the context,
-         * which is the current activity.
-         */
-        productDbHelper = new ProductDbHelper(this);
 
         // find the TextView in activity_inventory.xml
         tableContentTextView = (TextView) findViewById(R.id.table_content_text_view);
@@ -152,9 +141,6 @@ public class InventoryActivity extends AppCompatActivity {
      */
     public void insertProduct(String productName, int productPrice, int productQuantity,
                               String productSupplier, String productSupplierPhoneNumber) {
-
-        // gets a database in write mode
-        SQLiteDatabase db = productDbHelper.getWritableDatabase();
 
         // Create a ContentValues object where column names are the keys, and the parameters
         // supplied to the insertProduct method are the values.
