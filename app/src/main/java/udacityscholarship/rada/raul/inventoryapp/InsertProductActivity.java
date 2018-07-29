@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +44,16 @@ public class InsertProductActivity extends AppCompatActivity {
      */
     private Button saveButton;
 
+    /**
+     * default price is 0
+     */
+    private static final int NO_PRICE = 0;
+
+    /**
+     * default quantity is 0
+     */
+    private static final int NO_QUANTITY = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +78,58 @@ public class InsertProductActivity extends AppCompatActivity {
                 // Use trim to eliminate leading or trailing white space
                 // Where case, get numerical value of Strings read from EditTexts
                 String productName = productNameEditText.getText().toString().trim();
+                // if product name is empty, let user know that product name must be provided
+                // and return without saving the product
+                if(TextUtils.isEmpty(productName)){
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.product_name_required),Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String productPriceString =
                         productPriceEditText.getText().toString().trim();
-                int productPrice = Integer.parseInt(productPriceString);
+                int productPrice;
+
+                // don't parse an empty String, otherwise the app will crash!!!
+                if (!TextUtils.isEmpty(productPriceString)){
+                    productPrice = Integer.parseInt(productPriceString);
+                } else {
+                    // let user know that price must be provided
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.product_price_not_null),Toast.LENGTH_SHORT).show();
+                    // return without saving the product
+                    return;
+                }
+
+                // set quantity to default value
+                int productQuantity = NO_QUANTITY;
                 String productQuantityString =
                         productQuantityEditText.getText().toString().trim();
-                int productQuantity = Integer.parseInt(productQuantityString);
+
+                // don't parse an empty String, otherwise the app will crash!!!
+                if(!TextUtils.isEmpty(productQuantityString)) {
+                    productQuantity = Integer.parseInt(productQuantityString);
+                }
+
+                // if product supplier EditText is empty, let user know that product supplier name
+                // must be provided and return without saving the product
                 String productSupplier = productSupplierEditText.getText().toString().trim();
+                if(TextUtils.isEmpty(productSupplier)){
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.product_supplier_required),Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String productSupplierPhoneNumber =
                         productSupplierPhoneEditText.getText().toString().trim();
+                // if product supplier phone number EditText is empty, let user know that product
+                // supplier phone number must be provided and return without saving the product
+                if(TextUtils.isEmpty(productSupplierPhoneNumber)){
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.product_supplier_phone_required),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // Create a ContentValues object where column names are the keys, and the parameters
                 // supplied to the insertProduct method are the values.
