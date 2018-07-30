@@ -198,6 +198,10 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                 null);                             // Default sort order
     }
 
+    /**
+     * Called after the completion of onCreateLoader(), and it updates the UI with the new
+     * information
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Update the {@link ProductCursorAdapter} with this new cursor containing updated
@@ -205,6 +209,10 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         productCursorAdapter.swapCursor(data);
     }
 
+    /**
+     * Called when information needs to be refreshed. Remove old information, so that new data can
+     * be swapped in.
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // Callback called when the data needs to be deleted

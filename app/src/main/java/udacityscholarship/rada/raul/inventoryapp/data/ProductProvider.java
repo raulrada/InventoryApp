@@ -153,6 +153,13 @@ public class ProductProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException(CANNOT_QUERY_URI + uri);
         }
+
+        // Set notification URI on the Cursor,
+        // so we know what content URI the Cursor was created for.
+        // If the data at this URI changes, then we know we need to update the Cursor.
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        // return the cursor
         return cursor;
     }
 
@@ -161,6 +168,7 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
+        // Figure out if the URI matcher can match the URI to a specific code
         final int uriMatch = sUriMatcher.match(uri);
 
         switch (uriMatch){
@@ -178,6 +186,7 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        // Figure out if the URI matcher can match the URI to a specific code
         final int uriMatch = sUriMatcher.match(uri);
         switch (uriMatch) {
             case PRODUCTS:
@@ -253,6 +262,9 @@ public class ProductProvider extends ContentProvider {
             return null;
         }
 
+        // Notify all listeners that the data has changed for the pet content URI
+        getContext().getContentResolver().notifyChange(uri, null);
+
         // Return the new URI with the newRowId (of the newly inserted row) appended at the end
         return ContentUris.withAppendedId(uri, newRowId);
     }
@@ -265,20 +277,34 @@ public class ProductProvider extends ContentProvider {
         // get a writable database;
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
 
+        // Track the number of rows that were deleted
+        int rowsDeleted;
+
         final int uriMatch = sUriMatcher.match(uri);
 
         switch (uriMatch) {
             case PRODUCTS:
                 // Delete all rows that match the selection and selection args
-                return db.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             case PRODUCT_ID:
                 // Delete a single row given by the ID in the URI
                 selection = ProductContract.ProductEntry._ID + SINGLE_PRODUCT_PLACEHOLDER;
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return db.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException(CANNOT_DELETE_URI + uri);
         }
+
+        // If 1 or more rows were deleted, then notify all listeners that the data at the
+        // given URI has changed
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows deleted
+        return rowsDeleted;
     }
 
     /**
@@ -381,6 +407,17 @@ public class ProductProvider extends ContentProvider {
         // Otherwise, get writable database to update the data
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
 
-        return db.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+        // Perform the update on the database and get the number of rows affected
+        int rowsUpdated = db.update(ProductContract.ProductEntry.TABLE_NAME, values, selection,
+                selectionArgs);
+
+        // If 1 or more rows were updated, then notify all listeners that the data at the
+        // given URI has changed
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows updated
+        return rowsUpdated;
     }
 }
