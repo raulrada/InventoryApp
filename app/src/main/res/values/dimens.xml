@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="no_width">0dp</dimen>
+    <dimen name="no_height">0dp</dimen>
+
     <!-- EditText dimensions -->
     <dimen name="editTextMarginStart">20dp</dimen>
     <dimen name="editTextMarginEnd">20dp</dimen>
     <dimen name="editTextMarginTop">10dp</dimen>
     <dimen name="editTextMarginBottom">0dp</dimen>
     <dimen name="editTextSize">17sp</dimen>
+
+    <!-- List item dimensions -->
+    <dimen name="textViewListItemMarginStart">10dp</dimen>
+    <dimen name="textViewListItemMarginEnd">5dp</dimen>
+    <dimen name="textViewListItemMarginTop">3dp</dimen>
+    <dimen name="textViewListItemMarginBottom">3dp</dimen>
+    <dimen name="textViewListItemTitleTextSize">17sp</dimen>
+    <dimen name="textViewListItemRegularTextSize">14sp</dimen>
+
+    <dimen name="buttonListItemMarginStart">10dp</dimen>
+    <dimen name="buttonListItemMarginEnd">10dp</dimen>
+    <dimen name="buttonListItemMarginTop">3dp</dimen>
+    <dimen name="buttonListItemMarginBottom">3dp</dimen>
+    <dimen name="buttonListItemWidth">60dp</dimen>
 
 </resources>

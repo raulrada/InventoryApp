@@ -26,4 +26,11 @@
 
     <string name="product_save_error">Error with saving product</string>
     <string name="product_save_successful">Product saved</string>
+
+    <string name="list_item_sell">Sell</string>
+
+    <string name="list_item_product">Product: %1$s</string>
+    <string name="list_item_price">Price: %1$d EUR</string>
+    <string name="list_item_quantity">Quantity: %1$d</string>
+
 </resources>

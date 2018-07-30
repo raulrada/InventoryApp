@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="@dimen/no_width"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/text.textView.title"
+            android:id="@+id/list_item_product_name_text_view"
+            tools:text="Product: "/>
+
+        <TextView
+            style="@style/text.textView.regular"
+            android:id="@+id/list_item_product_price_text_view"
+            tools:text="Price: "/>
+
+        <TextView
+            style="@style/text.textView.regular"
+            android:id="@+id/list_item_product_quantity_text_view"
+            tools:text="Quantity: "/>
+
+    </LinearLayout>
+
+    <Button
+        style="@style/button"
+        android:id="@+id/list_item_sell_button"
+        android:layout_width="@dimen/buttonListItemWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/buttonListItemMarginStart"
+        android:layout_marginEnd="@dimen/buttonListItemMarginEnd"
+        android:layout_marginTop="@dimen/buttonListItemMarginTop"
+        android:layout_marginBottom="@dimen/buttonListItemMarginBottom"
+        android:text="@string/list_item_sell"
+        android:layout_gravity="center_vertical"
+        android:textAllCaps="false" />
+
+</LinearLayout>

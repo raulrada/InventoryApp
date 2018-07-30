@@ -11,6 +11,23 @@
     <style name="text"  parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
+    
+    <style name="text.textView">
+        <item name="android:layout_marginStart">@dimen/textViewListItemMarginStart</item>
+        <item name="android:layout_marginEnd">@dimen/textViewListItemMarginEnd</item>
+        <item name="android:layout_marginTop">@dimen/textViewListItemMarginTop</item>
+        <item name="android:layout_marginBottom">@dimen/textViewListItemMarginBottom</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="text.textView.regular">
+        <item name="android:textSize">@dimen/textViewListItemRegularTextSize</item>
+    </style>
+
+    <style name="text.textView.title">
+        <item name="android:textSize">@dimen/textViewListItemTitleTextSize</item>
+    </style>
 
     <style name="text.editText" parent="@style/Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
@@ -34,6 +51,10 @@
 
     <style name="text.editText.phoneInput">
         <item name="android:inputType">phone</item>
+    </style>
+
+    <style name="button" parent="Widget.AppCompat.Button">
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
 </resources>
