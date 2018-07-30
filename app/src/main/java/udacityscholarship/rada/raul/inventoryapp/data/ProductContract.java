@@ -1,5 +1,6 @@
 package udacityscholarship.rada.raul.inventoryapp.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -22,6 +23,11 @@ public final class ProductContract {
      * Scheme part of the content URI
      */
     public static final String URI_SCHEME = "content://";
+
+    /**
+     * used when constructing MIME types
+     */
+    public static final String SLASH = "/";
 
     /**
      * Use URI_SCHEME and CONTENT_AUTHORITY to create the base of all URI's which apps will
@@ -52,6 +58,20 @@ public final class ProductContract {
 
         /** The content URI to access the product data in the provider */
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a list of products.
+         */
+        public static final String CONTENT_LIST_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + SLASH + CONTENT_AUTHORITY +
+                        SLASH + PATH_PRODUCTS;
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a single product.
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + SLASH + CONTENT_AUTHORITY +
+                        SLASH + PATH_PRODUCTS;
 
         /**
          * Name of the database table for products

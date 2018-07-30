@@ -43,6 +43,17 @@ public class ProductProvider extends ContentProvider {
      */
     private static String SINGLE_PRODUCT_PLACEHOLDER = "=?";
 
+    /**
+     * Strings used for throwing various errors.
+     */
+    private static String CANNOT_QUERY_URI = "Cannot query unknown URI ";
+    private static String CANNOT_INSERT_URI = "Insertion is not supported for ";
+    private static String CANNOT_DELETE_URI = "Deletion is not supported for ";
+    private static String CANNOT_UPDATE_URI = "Update is not supported for ";
+    private static String INSERTION_FAILED = "Failed to insert row for ";
+    private static String UNKNOWN_URI = "Unknown URI ";
+    private static String WITH_URI_MATCH = " with URI match ";
+
     // Static initializer. This is run the first time anything is called from this class.
     static {
         /**
@@ -140,7 +151,7 @@ public class ProductProvider extends ContentProvider {
                 break;
 
             default:
-                throw new IllegalArgumentException("Cannot query unknown URI " + uri);
+                throw new IllegalArgumentException(CANNOT_QUERY_URI + uri);
         }
         return cursor;
     }
@@ -150,7 +161,16 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int uriMatch = sUriMatcher.match(uri);
+
+        switch (uriMatch){
+            case PRODUCTS:
+                return ProductContract.ProductEntry.CONTENT_LIST_TYPE;
+            case PRODUCT_ID:
+                return ProductContract.ProductEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException(UNKNOWN_URI + uri + WITH_URI_MATCH + uriMatch);
+        }
     }
 
     /**
@@ -163,7 +183,7 @@ public class ProductProvider extends ContentProvider {
             case PRODUCTS:
                 return insertProduct(uri, values);
             default:
-                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+                throw new IllegalArgumentException(CANNOT_INSERT_URI + uri);
         }
     }
 
@@ -229,7 +249,7 @@ public class ProductProvider extends ContentProvider {
 
         // If the newRowId is -1, then the insertion failed. Log an error and return null.
         if (newRowId == -1) {
-            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            Log.e(LOG_TAG, INSERTION_FAILED + uri);
             return null;
         }
 
@@ -257,7 +277,7 @@ public class ProductProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 return db.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
             default:
-                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+                throw new IllegalArgumentException(CANNOT_DELETE_URI + uri);
         }
     }
 
@@ -279,7 +299,7 @@ public class ProductProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 return updateProduct(uri, values, selection, selectionArgs);
             default:
-                throw new IllegalArgumentException("Update is not supported for " + uri);
+                throw new IllegalArgumentException(CANNOT_UPDATE_URI + uri);
         }
     }
 
@@ -358,7 +378,7 @@ public class ProductProvider extends ContentProvider {
             return 0;
         }
 
-        // Otherwise, get writeable database to update the data
+        // Otherwise, get writable database to update the data
         SQLiteDatabase db = productDbHelper.getWritableDatabase();
 
         return db.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
