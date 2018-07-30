@@ -33,4 +33,6 @@
     <string name="list_item_price">Price: %1$d EUR</string>
     <string name="list_item_quantity">Quantity: %1$d</string>
 
+    <string name="empty_text">The products database is currently empty.\nPlease add products using the options in the menu in the app bar.</string>
+
 </resources>
