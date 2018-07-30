@@ -1,3 +1,6 @@
+// inspired by code within the pet app by Udacity,
+// at https://github.com/udacity/ud845-Pets/blob/lesson-three/app/src/main/java/com/example/android/pets/data/PetProvider.java
+
 package udacityscholarship.rada.raul.inventoryapp.data;
 
 import android.content.ContentProvider;
@@ -7,13 +10,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
-
-import java.net.URI;
-import java.security.Provider;
 
 import udacityscholarship.rada.raul.inventoryapp.R;
 
@@ -22,6 +19,10 @@ import udacityscholarship.rada.raul.inventoryapp.R;
  */
 public class ProductProvider extends ContentProvider {
 
+    /**
+     * Tag for the log messages
+     */
+    public static final String LOG_TAG = ProductProvider.class.getSimpleName();
     /**
      * URI matcher code for the content URI for the products table
      */
@@ -41,9 +42,6 @@ public class ProductProvider extends ContentProvider {
      * placeholder for single product selection, used in the query method of {@link ProductProvider}
      */
     private static String SINGLE_PRODUCT_PLACEHOLDER = "=?";
-
-    /** Tag for the log messages */
-    public static final String LOG_TAG = ProductProvider.class.getSimpleName();
 
     // Static initializer. This is run the first time anything is called from this class.
     static {
@@ -160,8 +158,8 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
+        final int uriMatch = sUriMatcher.match(uri);
+        switch (uriMatch) {
             case PRODUCTS:
                 return insertProduct(uri, values);
             default:
@@ -171,16 +169,18 @@ public class ProductProvider extends ContentProvider {
 
     /**
      * helper method inserting a product in the database
-     * @param uri general product URI to be used in order to construct the URI for the newly
-     *            inserted product
+     *
+     * @param uri    general product URI to be used in order to construct the URI for the newly
+     *               inserted product
      * @param values to be inserted in the database in relation to the product
      * @return URI for the newly inserted product
      */
     private Uri insertProduct(Uri uri, ContentValues values) {
 
         // Check that the name is not null
-        String productName = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
-        if (productName == null){
+        String productName = values.getAsString(
+                ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+        if (productName == null) {
             throw new IllegalArgumentException(
                     getContext().getString(R.string.product_name_required));
         }
@@ -188,11 +188,11 @@ public class ProductProvider extends ContentProvider {
         // Check that product price is not null and that it is positive
         Integer productPrice = values.getAsInteger
                 (ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
-        if (productPrice == null){
+        if (productPrice == null) {
             throw new IllegalArgumentException(
                     getContext().getString(R.string.product_price_not_null));
         }
-        if (productPrice<0){
+        if (productPrice < 0) {
             throw new IllegalArgumentException(
                     getContext().getString(R.string.product_price_positive));
         }
@@ -200,14 +200,15 @@ public class ProductProvider extends ContentProvider {
         // If a product quantity is provided, check that it is not negative
         Integer productQuantity = values.getAsInteger
                 (ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
-        if (productQuantity != null && productQuantity < 0){
+        if (productQuantity != null && productQuantity < 0) {
             throw new IllegalArgumentException(
                     getContext().getString(R.string.product_quantity_positive));
         }
 
         // Check that the name of the supplier is not null
-        String productSupplier = values.getAsString(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER);
-        if (productSupplier == null){
+        String productSupplier = values.getAsString(
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER);
+        if (productSupplier == null) {
             throw new IllegalArgumentException(
                     getContext().getString(R.string.product_supplier_required));
         }
@@ -215,7 +216,7 @@ public class ProductProvider extends ContentProvider {
         // Check that the phone number of the supplier is not null
         String productSupplierPhoneNumber = values.getAsString(
                 ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
-        if (productSupplierPhoneNumber == null){
+        if (productSupplierPhoneNumber == null) {
             throw new IllegalArgumentException(
                     getContext().getString(R.string.product_supplier_phone_required));
         }
@@ -249,6 +250,101 @@ public class ProductProvider extends ContentProvider {
      */
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+
+        final int uriMatch = sUriMatcher.match(uri);
+        switch (uriMatch) {
+            case PRODUCTS:
+                return updateProduct(uri, values, selection, selectionArgs);
+            case PRODUCT_ID:
+                // For the PRODUCT_ID code, extract out the ID from the URI,
+                // so we know which row to update. Selection will be "_id=?" and selection
+                // arguments will be a String array containing the actual ID.
+                selection = ProductContract.ProductEntry._ID + SINGLE_PRODUCT_PLACEHOLDER;
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updateProduct(uri, values, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Helper method for updating one or more products in the database with the given ContentValues.
+     * Apply the changes to the rows specified in the selection and selection arguments
+     * (which could be 0 or 1 or more products).
+     *
+     * @return number of rows that were successfully updated.
+     */
+    private int updateProduct(Uri uri, ContentValues values, String selection,
+                              String[] selectionArgs) {
+        // If the {@link ProductEntry#COLUMN_PRODUCT_NAME} key is present,
+        // check that the product name value is not null.
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_NAME)) {
+            String productName = values.getAsString(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+            if (productName == null) {
+                throw new IllegalArgumentException(
+                        getContext().getString(R.string.product_name_required));
+            }
+        }
+
+        // If the {@link ProductEntry#COLUMN_PRODUCT_PRICE} key is present,
+        // check that the product price value is not null and that the product price
+        // is not negative.
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE)) {
+            Integer productPrice = values.getAsInteger(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+            if (productPrice == null) {
+                throw new IllegalArgumentException(
+                        getContext().getString(R.string.product_price_not_null));
+            }
+            if (productPrice < 0) {
+                throw new IllegalArgumentException(
+                        getContext().getString(R.string.product_price_positive));
+            }
+        }
+
+        // If the {@link ProductEntry#COLUMN_PRODUCT_QUANTITY} key is present,
+        // check that the product quantity value is not negative, in case the product quantity
+        // value is not null.
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY)) {
+            Integer productQuantity = values.getAsInteger(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+            if (productQuantity != null && productQuantity < 0) {
+                throw new IllegalArgumentException(
+                        getContext().getString(R.string.product_quantity_positive));
+            }
+        }
+
+        // If the {@link ProductEntry#COLUMN_PRODUCT_SUPPLIER} key is present,
+        // check that the product supplier value is not null.
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER)) {
+            String productSupplier = values.getAsString(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER);
+            if (productSupplier == null) {
+                throw new IllegalArgumentException(
+                        getContext().getString(R.string.product_supplier_required));
+            }
+        }
+
+        // If the {@link ProductEntry#COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER} key is present,
+        // check that the product supplier phone number value is not null.
+        if (values.containsKey(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER)) {
+            String productSupplierPhoneNumber = values.getAsString(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
+            if (productSupplierPhoneNumber == null) {
+                throw new IllegalArgumentException(
+                        getContext().getString(R.string.product_supplier_phone_required));
+            }
+        }
+
+        // If there are no values to update, then don't try to update the database
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // Otherwise, get writeable database to update the data
+        SQLiteDatabase db = productDbHelper.getWritableDatabase();
+
+        return db.update(ProductContract.ProductEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 }
