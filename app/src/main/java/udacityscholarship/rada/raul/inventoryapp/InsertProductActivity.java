@@ -1,7 +1,13 @@
 package udacityscholarship.rada.raul.inventoryapp;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.util.Log;
+import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +19,8 @@ import android.widget.Toast;
 
 import udacityscholarship.rada.raul.inventoryapp.data.ProductContract;
 
-public class InsertProductActivity extends AppCompatActivity {
+public class InsertProductActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     /**
      * EditText field to enter the product name
@@ -60,6 +67,9 @@ public class InsertProductActivity extends AppCompatActivity {
      */
     private static final int NO_QUANTITY = 0;
 
+    /** Identifier for the product data loader */
+    private static final int EXISTING_PRODUCT_LOADER = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +90,7 @@ public class InsertProductActivity extends AppCompatActivity {
         // Get the Uri from the data field of the intent, if such Uri was attached (otherwise
         // currentProductUri shall be null, signalling that the InsertProductActivity should be
         // set into the mode allowing for the insertion of a new product
-        Uri currentProductUri = intent.getData();
+        currentProductUri = intent.getData();
 
         if (currentProductUri == null){
             setInInsertMode();
@@ -141,6 +151,7 @@ public class InsertProductActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(productSupplier)){
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.product_supplier_required),Toast.LENGTH_SHORT).show();
+                    // return without saving the product
                     return;
                 }
 
@@ -152,6 +163,7 @@ public class InsertProductActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.product_supplier_phone_required),
                             Toast.LENGTH_SHORT).show();
+                    // return without saving the product
                     return;
                 }
 
@@ -194,9 +206,108 @@ public class InsertProductActivity extends AppCompatActivity {
 
     private void setInDisplayMode() {
         getSupportActionBar().setTitle(R.string.display_product_details_label);
+
+        // if we just display the information about the product, the Save button should not be
+        // displayed, and the EditTexts should be disabled.
+        saveButton.setVisibility(View.GONE);
+        productNameEditText.setEnabled(false);
+        productNameEditText.setInputType(0);
+        productPriceEditText.setEnabled(false);
+        productPriceEditText.setInputType(0);
+        productQuantityEditText.setEnabled(false);
+        productQuantityEditText.setInputType(0);
+        productSupplierEditText.setEnabled(false);
+        productSupplierEditText.setInputType(0);
+        productSupplierPhoneEditText.setEnabled(false);
+        productSupplierPhoneEditText.setInputType(0);
+
+        // Initialize a loader to read the product data from the database
+        // and display the current values in the editor
+        getLoaderManager().initLoader(EXISTING_PRODUCT_LOADER, null, this);
     }
 
     private void setInInsertMode() {
         getSupportActionBar().setTitle(R.string.insert_product_activity_label);
+
+        // if we just display the information about the product, the Save button should not be
+        // displayed, and the EditTexts should be disabled.
+        saveButton.setVisibility(View.VISIBLE);
+        productNameEditText.setEnabled(true);
+        productPriceEditText.setEnabled(true);
+        productQuantityEditText.setEnabled(true);
+        productSupplierEditText.setEnabled(true);
+        productSupplierPhoneEditText.setEnabled(true);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        // Define a projection that specifies which columns from the database which are relevant -
+        // in our case, all of the columns are relevant
+        String[] projection = {
+                ProductContract.ProductEntry._ID,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_NAME,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER,
+                ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
+        };
+
+        // This loader will execute the ContentProvider's query method on a background thread
+        return new CursorLoader(this,                // Parent activity context
+                currentProductUri,                          // query the content URI for the current product
+                projection,                                 // Columns to include in the resulting Cursor
+                null,                               // No selection clause
+                null,                            // No selection arguments
+                null);                             // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        // Bail early if the cursor is null or there is less than 1 row in the cursor
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+
+        // Proceed with moving to the first row of the cursor and reading data from it
+        // (This should be the only row in the cursor - we are looking at one single product)
+        if (cursor.moveToFirst()){
+            // Find the indices of the columns of product attributes that we're interested in
+            int nameColumnIndex = cursor.getColumnIndex(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
+            int priceColumnIndex = cursor.getColumnIndex(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+            int quantityColumnIndex = cursor.getColumnIndex(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+            int supplierColumnIndex = cursor.getColumnIndex(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER);
+            int supplierPhoneColumnIndex = cursor.getColumnIndex(
+                    ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
+
+            // Extract out the value from the Cursor for the given column index
+            String productName = cursor.getString(nameColumnIndex);
+            int productPrice = cursor.getInt(priceColumnIndex);
+            int productQuantity = cursor.getInt(quantityColumnIndex);
+            String productSupplier = cursor.getString(supplierColumnIndex);
+            String productSupplierPhoneNumber = cursor.getString(supplierPhoneColumnIndex);
+
+            // Update the views on the screen with the values from the database
+            productNameEditText.setText(productName);
+            productPriceEditText.setText(Integer.toString(productPrice));
+            productQuantityEditText.setText(Integer.toString(productQuantity));
+            productSupplierEditText.setText(productSupplier);
+            productSupplierPhoneEditText.setText(productSupplierPhoneNumber);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // If the loader is invalidated, clear out all the data from the input fields.
+        productNameEditText.setText("");
+        productPriceEditText.setText("");
+        productQuantityEditText.setText("");
+        productSupplierEditText.setText("");
+        productSupplierPhoneEditText.setText("");
     }
 }
