@@ -109,9 +109,8 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                         ProductContract.ProductEntry.CONTENT_URI, id);
 
                 // Set the URI on the data field of the intent
-                //startInsertProductActivityIntent.setData(currentProductUri);
+                startInsertProductActivityIntent.setData(currentProductUri);
 
-                Log.v("rrraul", "start insert");
                 // launch InsertProductActivity
                 startActivity(startInsertProductActivityIntent);
             }
