@@ -1,8 +1,12 @@
 package udacityscholarship.rada.raul.inventoryapp;
 
+import android.Manifest;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
@@ -53,6 +57,11 @@ public class InsertProductActivity extends AppCompatActivity implements
     private Button saveButton;
 
     /**
+     * Button allowing user to call the supplier of a product
+     */
+    private Button orderButton;
+
+    /**
      * Uri from the data field of the intent used to lauch InsertProductActivity
      */
     private Uri currentProductUri;
@@ -67,8 +76,25 @@ public class InsertProductActivity extends AppCompatActivity implements
      */
     private static final int NO_QUANTITY = 0;
 
-    /** Identifier for the product data loader */
+    /**
+     * Identifier for the product data loader
+     */
     private static final int EXISTING_PRODUCT_LOADER = 0;
+
+    /**
+     * value for EditTexts inputType when in display product mode
+     */
+    private static final int NONE = 0;
+
+    /**
+     * String value used for the call intent
+     */
+    private static final String TELEPHONE = "tel:";
+
+    /**
+     * request code for the call permission requested.
+     */
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +109,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         productSupplierEditText = (EditText) findViewById(R.id.edit_text_product_supplier);
         productSupplierPhoneEditText = (EditText) findViewById(R.id.edit_text_product_supplier_phone);
         saveButton = (Button) findViewById(R.id.button_save_insert);
+        orderButton = (Button) findViewById(R.id.button_order_insert);
 
         // Get the intent used to launch the InsertProductActivity
         Intent intent = getIntent();
@@ -202,24 +229,55 @@ public class InsertProductActivity extends AppCompatActivity implements
                 productSupplierPhoneEditText.setText("");
             }
         });
+
+        orderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get supplier phone number
+                String productSupplierPhoneNumber =
+                        productSupplierPhoneEditText.getText().toString().trim();
+
+                // check if the user is viewing a dummy product
+                if (productSupplierPhoneNumber.equalsIgnoreCase(InventoryActivity.PRODUCT_SUPPLIER_PHONE_NUMBER)){
+                    // let the user know they cannot call the supplier of a dummy product
+                    Toast.makeText(InsertProductActivity.this,
+                            getString(R.string.call_dummy_product_supplier),Toast.LENGTH_SHORT).show();
+                } else {
+                    // prepare intent to start phone app to call the supplier phone number
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse(TELEPHONE + productSupplierPhoneNumber));
+
+                    // check if there is an app on the user's device which can handle phone calls
+                    if (callIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(callIntent);
+                    } else {
+                        // let the user know the device doesn't have an app to handle making phone calls
+                        Toast.makeText(InsertProductActivity.this,
+                                getString(R.string.no_phone_app),Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
     private void setInDisplayMode() {
         getSupportActionBar().setTitle(R.string.display_product_details_label);
 
         // if we just display the information about the product, the Save button should not be
-        // displayed, and the EditTexts should be disabled.
+        // displayed, and the EditTexts should be disabled. inputType for the edit texts should
+        // also be set to NONE (0), in order to prevent the keyboard from showing on screen.
         saveButton.setVisibility(View.GONE);
+        orderButton.setVisibility(View.VISIBLE);
         productNameEditText.setEnabled(false);
-        productNameEditText.setInputType(0);
+        productNameEditText.setInputType(NONE);
         productPriceEditText.setEnabled(false);
-        productPriceEditText.setInputType(0);
+        productPriceEditText.setInputType(NONE);
         productQuantityEditText.setEnabled(false);
-        productQuantityEditText.setInputType(0);
+        productQuantityEditText.setInputType(NONE);
         productSupplierEditText.setEnabled(false);
-        productSupplierEditText.setInputType(0);
+        productSupplierEditText.setInputType(NONE);
         productSupplierPhoneEditText.setEnabled(false);
-        productSupplierPhoneEditText.setInputType(0);
+        productSupplierPhoneEditText.setInputType(NONE);
 
         // Initialize a loader to read the product data from the database
         // and display the current values in the editor
@@ -229,9 +287,10 @@ public class InsertProductActivity extends AppCompatActivity implements
     private void setInInsertMode() {
         getSupportActionBar().setTitle(R.string.insert_product_activity_label);
 
-        // if we just display the information about the product, the Save button should not be
-        // displayed, and the EditTexts should be disabled.
+        // if we are in insert mode, the Save button should be displayed, the orderButton should
+        // not be displayed, and the EditTexts should be enabled.
         saveButton.setVisibility(View.VISIBLE);
+        orderButton.setVisibility(View.GONE);
         productNameEditText.setEnabled(true);
         productPriceEditText.setEnabled(true);
         productQuantityEditText.setEnabled(true);

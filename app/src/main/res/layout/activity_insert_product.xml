@@ -55,4 +55,14 @@
         android:layout_centerHorizontal="true"
         android:text="@string/save_button_insert" />
 
+    <Button
+        style="@style/button"
+        android:id="@+id/button_order_insert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/order_button_insert"
+        android:visibility="gone"/>
+
 </RelativeLayout>

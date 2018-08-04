@@ -17,6 +17,7 @@
     <string name="product_supplier_phone">Supplier Phone Number:</string>
 
     <string name="save_button_insert">Save</string>
+    <string name="order_button_insert">Order</string>
 
     <string name="product_name_required">Product requires a name!</string>
     <string name="product_price_not_null">Product price must be provided!</string>
@@ -36,4 +37,6 @@
 
     <string name="empty_text">The products database is currently empty.\nPlease add products using the options in the menu in the app bar.</string>
 
+    <string name="no_phone_app">It looks like your device does not have an app that can handle phone calls.</string>
+    <string name="call_dummy_product_supplier">You are viewing a dummy product.\nYou cannot call its supplier</string>
 </resources>

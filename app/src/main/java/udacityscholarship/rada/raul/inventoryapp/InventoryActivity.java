@@ -49,7 +49,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
     /**
      * Constant value used when inserting dummy product name
      */
-    private static final String PRODUCT_SUPPLIER_PHONE_NUMBER = "n/a";
+    public static final String PRODUCT_SUPPLIER_PHONE_NUMBER = "n/a";
     /**
      * Constant value for maximum price of a dummy product
      */
