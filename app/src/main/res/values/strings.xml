@@ -4,6 +4,7 @@
     <!-- Labels for app activities -->
     <string name="inventory_activity_label">List of Products</string>
     <string name="insert_product_activity_label">Insert Product</string>
+    <string name="display_product_details_label">Product Details</string>
 
     <string name="action_insert_products">Insert products</string>
     <string name="action_insert_individual_product">Insert individual products</string>

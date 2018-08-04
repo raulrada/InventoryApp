@@ -2,6 +2,7 @@
 
 package udacityscholarship.rada.raul.inventoryapp;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +11,9 @@ import android.preference.ListPreference;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -83,6 +87,36 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         // Attach the adapter to the ListView
         productsListView.setAdapter(productCursorAdapter);
 
+        // click listener for the list view containing products information
+        productsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             *
+             * @param parent the list view
+             * @param view containing one product - the view on which the user clicks
+             * @param position of the item in the list view
+             * @param id of the item
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // intent to go to InsertProductActivity
+                Intent startInsertProductActivityIntent = new Intent(
+                        InventoryActivity.this, InsertProductActivity.class);
+
+                // Form the content URI that represents the specific product that was clicked on,
+                // by appending the "id" (passed as input to this method) onto the
+                // {@link ProductContract.ProductEntry#CONTENT_URI}.
+                Uri currentProductUri = ContentUris.withAppendedId(
+                        ProductContract.ProductEntry.CONTENT_URI, id);
+
+                // Set the URI on the data field of the intent
+                //startInsertProductActivityIntent.setData(currentProductUri);
+
+                Log.v("rrraul", "start insert");
+                // launch InsertProductActivity
+                startActivity(startInsertProductActivityIntent);
+            }
+        });
+
         // Kick off the loader
         getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
@@ -107,7 +141,8 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE, productPrice);
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
         values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER, productSupplier);
-        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, productSupplierPhoneNumber);
+        values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER,
+                productSupplierPhoneNumber);
 
         // Insert a new product into the provider, returning the content URI for the
         // new product.
@@ -159,8 +194,11 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         //determine what item was clicked by user and perform appropriate action
         switch (item.getItemId()) {
             case R.id.action_insert_individual_product:
-                Intent startInsertProductActivityIntent = new Intent(InventoryActivity.this,
-                        InsertProductActivity.class);
+                // intent to go to InsertProductActivity
+                Intent startInsertProductActivityIntent = new Intent(
+                        InventoryActivity.this, InsertProductActivity.class);
+
+                // launch InsertProductActivity
                 startActivity(startInsertProductActivityIntent);
                 return true;
 

@@ -19,7 +19,6 @@
         </activity>
         <activity
             android:name=".InsertProductActivity"
-            android:label="@string/insert_product_activity_label"
             android:parentActivityName=".InventoryActivity"/>
         <provider
             android:authorities="udacityscholarship.rada.raul.inventoryapp"

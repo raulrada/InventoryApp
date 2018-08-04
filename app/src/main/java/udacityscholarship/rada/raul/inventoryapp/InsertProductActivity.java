@@ -1,6 +1,7 @@
 package udacityscholarship.rada.raul.inventoryapp;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,6 +46,11 @@ public class InsertProductActivity extends AppCompatActivity {
     private Button saveButton;
 
     /**
+     * Uri from the data field of the intent used to lauch InsertProductActivity
+     */
+    private Uri currentProductUri;
+
+    /**
      * default price is 0
      */
     private static final int NO_PRICE = 0;
@@ -67,6 +73,20 @@ public class InsertProductActivity extends AppCompatActivity {
         productSupplierEditText = (EditText) findViewById(R.id.edit_text_product_supplier);
         productSupplierPhoneEditText = (EditText) findViewById(R.id.edit_text_product_supplier_phone);
         saveButton = (Button) findViewById(R.id.button_save_insert);
+
+        // Get the intent used to launch the InsertProductActivity
+        Intent intent = getIntent();
+
+        // Get the Uri from the data field of the intent, if such Uri was attached (otherwise
+        // currentProductUri shall be null, signalling that the InsertProductActivity should be
+        // set into the mode allowing for the insertion of a new product
+        Uri currentProductUri = intent.getData();
+
+        if (currentProductUri == null){
+            setInInsertMode();
+        } else {
+            setInDisplayMode();
+        }
 
         /**
          * determine the behaviour of the save button
@@ -101,7 +121,11 @@ public class InsertProductActivity extends AppCompatActivity {
                     return;
                 }
 
-                // set quantity to default value
+                // Set quantity to default value.
+                // It is logical to allow the introduction in the database of a product with a
+                // current quantity of 0 - the code allows for this on purpose, and therefore
+                // the code allows the edit text containing the product quantity information to be
+                // empty.
                 int productQuantity = NO_QUANTITY;
                 String productQuantityString =
                         productQuantityEditText.getText().toString().trim();
@@ -166,5 +190,13 @@ public class InsertProductActivity extends AppCompatActivity {
                 productSupplierPhoneEditText.setText("");
             }
         });
+    }
+
+    private void setInDisplayMode() {
+        getSupportActionBar().setTitle(R.string.display_product_details_label);
+    }
+
+    private void setInInsertMode() {
+        getSupportActionBar().setTitle(R.string.insert_product_activity_label);
     }
 }
