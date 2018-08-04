@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import udacityscholarship.rada.raul.inventoryapp.data.ProductContract;
 
@@ -82,5 +83,16 @@ public class ProductCursorAdapter extends CursorAdapter {
                 currentProductPrice));
         productQuantityTextView.setText(context.getString(R.string.list_item_quantity,
                 currentProductQuantity));
+
+        // variable holding the context. This variable must be final in order to be accessible from
+        // sellButton's onclicklistener.
+        final Context c = context;
+
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(c,"Selling product",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
