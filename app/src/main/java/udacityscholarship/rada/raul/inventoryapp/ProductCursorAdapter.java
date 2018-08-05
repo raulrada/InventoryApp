@@ -2,8 +2,11 @@
 
 package udacityscholarship.rada.raul.inventoryapp;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +25,18 @@ import udacityscholarship.rada.raul.inventoryapp.data.ProductContract;
 public class ProductCursorAdapter extends CursorAdapter {
 
     /**
+     * the context
+     */
+    private Context mContext;
+
+    /**
      * constructor of a new {@link ProductCursorAdapter}
      * @param context of the app
      * @param c the cursor containing the products data
      */
     public ProductCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
+        mContext = context;
     }
 
     /**
@@ -70,11 +79,14 @@ public class ProductCursorAdapter extends CursorAdapter {
                 ProductContract.ProductEntry.COLUMN_PRODUCT_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(
                 ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        int idColumnIndex = cursor.getColumnIndex(
+                ProductContract.ProductEntry._ID);
 
         // Read the product attributes from the Cursor for the current pet
         String currentProductName = cursor.getString(nameColumnIndex);
         int currentProductPrice = cursor.getInt(priceColumnIndex);
         int currentProductQuantity = cursor.getInt(quantityColumnIndex);
+        final int currentProductId = cursor.getInt(idColumnIndex);
 
         // Update the TextViews with the attributes for the current product
         productNameTextView.setText(context.getString(R.string.list_item_product,
@@ -84,14 +96,56 @@ public class ProductCursorAdapter extends CursorAdapter {
         productQuantityTextView.setText(context.getString(R.string.list_item_quantity,
                 currentProductQuantity));
 
-        // variable holding the context. This variable must be final in order to be accessible from
-        // sellButton's onclicklistener.
-        final Context c = context;
+        // final variable holding the quantity of the current product - necessary for the
+        // sellButton's onClickListener.
+        final int quantity = currentProductQuantity;
+
+        final TextView finalProductQuantityTextView = productQuantityTextView;
 
         sellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(c,"Selling product",Toast.LENGTH_SHORT).show();
+                Uri currentProductUri = ContentUris.withAppendedId(
+                        ProductContract.ProductEntry.CONTENT_URI, currentProductId);
+
+                // variable holding the current product quantity - not final, so it can be updated.
+                int innerQuantity = quantity;
+
+                // decrement product quantity, as long as it is >0.
+                if (innerQuantity > 0) {
+                    innerQuantity--;
+                } else {
+                    // let the user know quantity cannot be lower than 0.
+                    Toast.makeText(mContext, mContext.getString(R.string.quantity_error),
+                            Toast.LENGTH_SHORT).show();
+                    // no need to update the product details, so bail out.
+                    return;
+                }
+
+                // Create a ContentValues object where column names are the keys, and the parameters
+                // supplied to the insertProduct method are the values.
+                ContentValues values = new ContentValues();
+                values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, innerQuantity);
+
+                // this is an existing product, so update the product with content URI
+                // currentProductUri and pass in the new ContentValues. Pass in null for the
+                // selection and selection args because currentProductUri will already identify
+                // the correct row in the database that we want to modify.
+                int rowsAffected = mContext.getContentResolver().update(
+                        currentProductUri, values, null, null);
+
+                // check if the update failed
+                if (rowsAffected == 0) {
+                    // product update failed
+                    Toast.makeText(mContext, mContext.getString(R.string.product_update_error),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // product sold successful
+                    Toast.makeText(mContext, mContext.getString(R.string.product_sold),
+                            Toast.LENGTH_SHORT).show();
+                    finalProductQuantityTextView.setText(mContext.getString(R.string.list_item_quantity,
+                            innerQuantity));
+                }
             }
         });
     }

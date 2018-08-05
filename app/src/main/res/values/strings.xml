@@ -41,6 +41,8 @@
 
     <string name="quantity_error">Product quantity cannot be lower than 0.</string>
 
+    <string name="product_sold">Selling product.</string>
+
     <string name="list_item_sell">Sell</string>
 
     <string name="list_item_product">Product: %1$s</string>
