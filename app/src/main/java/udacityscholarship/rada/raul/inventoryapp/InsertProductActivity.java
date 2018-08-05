@@ -343,6 +343,55 @@ public class InsertProductActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        decreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get current quantity from the relevant EditText
+                String productQuantityString =
+                        productQuantityEditText.getText().toString().trim();
+
+                // get an integer value for the product quantity. Since we are guaranteed to see
+                // the increase quantity button only in product display mode, the value of
+                // productQuantityEditText is quaranteed not to be null.
+                int productQuantity = Integer.parseInt(productQuantityString);
+
+                // decrement product quantity, as long as it is >0.
+                if (productQuantity>0) {
+                    productQuantity--;
+                } else {
+                    // let the user know quantity cannot be lower than 0.
+                    Toast.makeText(getApplicationContext(), getString(R.string.quantity_error),
+                            Toast.LENGTH_SHORT).show();
+                    // no need to update the product details, so bail out.
+                    return;
+                }
+
+                // Create a ContentValues object where column names are the keys, and the parameters
+                // supplied to the insertProduct method are the values.
+                ContentValues values = new ContentValues();
+                values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
+
+                // this is an existing product, so update the product with content URI
+                // currentProductUri and pass in the new ContentValues. Pass in null for the
+                // selection and selection args because currentProductUri will already identify
+                // the correct row in the database that we want to modify.
+                int rowsAffected = getContentResolver().update(
+                        currentProductUri, values, null, null);
+
+                // check if the update failed
+                if (rowsAffected == 0) {
+                    // product update failed
+                    Toast.makeText(getApplicationContext(), getString(R.string.product_update_error),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // product update successful
+                    Toast.makeText(getApplicationContext(), getString(R.string.product_update_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     /**

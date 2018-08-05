@@ -39,6 +39,8 @@
     <string name="product_update_error">Error with updating product.</string>
     <string name="product_update_successful">Product updated.</string>
 
+    <string name="quantity_error">Product quantity cannot be lower than 0.</string>
+
     <string name="list_item_sell">Sell</string>
 
     <string name="list_item_product">Product: %1$s</string>
