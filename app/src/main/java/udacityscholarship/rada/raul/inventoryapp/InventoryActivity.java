@@ -31,8 +31,12 @@ import udacityscholarship.rada.raul.inventoryapp.data.ProductContract;
  * Main activity of the app. Shows a list of available products and permits navigation to other
  * activities within the app
  */
-public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    /**
+     * Constant value used when inserting dummy product name
+     */
+    public static final String PRODUCT_SUPPLIER_PHONE_NUMBER = "n/a";
     /**
      * Number of dummy products which should be inserted in the database every time the user selects
      * the insertion of dummy products
@@ -47,10 +51,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      */
     private static final String PRODUCT_SUPPLIER = "Supplier ";
     /**
-     * Constant value used when inserting dummy product name
-     */
-    public static final String PRODUCT_SUPPLIER_PHONE_NUMBER = "n/a";
-    /**
      * Constant value for maximum price of a dummy product
      */
     private static final int PRODUCT_MAX_PRICE = 100;
@@ -59,10 +59,14 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      */
     private static final int PRODUCT_MAX_QUANTITY = 10;
 
-    /** Identifier for the product data loader */
+    /**
+     * Identifier for the product data loader
+     */
     private static final int PRODUCT_LOADER = 0;
 
-    /** Adapter for the ListView */
+    /**
+     * Adapter for the ListView
+     */
     ProductCursorAdapter productCursorAdapter;
 
     @Override

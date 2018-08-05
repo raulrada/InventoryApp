@@ -28,87 +28,76 @@ import android.widget.Toast;
 import udacityscholarship.rada.raul.inventoryapp.data.ProductContract;
 
 public class InsertProductActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
-
-    /**
-     * EditText field to enter the product name
-     */
-    private EditText productNameEditText;
-
-    /**
-     * EditText field to enter the product price
-     */
-    private EditText productPriceEditText;
-
-    /**
-     * EditText field to enter the product quantity
-     */
-    private EditText productQuantityEditText;
-
-    /**
-     * EditText field to enter the product supplier name
-     */
-    private EditText productSupplierEditText;
-
-    /**
-     * EditText field to enter the product supplier phone number
-     */
-    private EditText productSupplierPhoneEditText;
-
-    /**
-     * Button allowing user to save the information about a product
-     */
-    private Button saveButton;
-
-    /**
-     * Button allowing user to call the supplier of a product
-     */
-    private Button orderButton;
-
-    /**
-     * Button allowing user to delete a product
-     */
-    private Button deleteButton;
-
-    /**
-     * Button allowing the user to increase the quantity of a product.
-     */
-    private Button increaseQuantityButton;
-
-    /**
-     * Button allowing the user to decrease the quantity of a product.
-     */
-    private Button decreaseQuantityButton;
-
-    /**
-     * Relative Layout holding the increase / decrease quantity buttons.
-     */
-    private RelativeLayout adjustQuantityRL;
-
-    /**
-     * Uri from the data field of the intent used to lauch InsertProductActivity
-     */
-    private Uri currentProductUri;
-
-    /**
-     * Variable showing whether the menu should be displayed or not.
-     */
-    private static boolean shouldShowMenu;
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * default quantity is 0
      */
     private static final int NO_QUANTITY = 0;
-
     /**
      * Identifier for the product data loader
      */
     private static final int EXISTING_PRODUCT_LOADER = 0;
-
     /**
      * String value used for the call intent
      */
     private static final String TELEPHONE = "tel:";
+    /**
+     * String key for saving the state of the method in onSaveInstanceState.
+     */
+    private static final String KEY_MODE = "mode";
+    /**
+     * Variable showing whether the menu should be displayed or not.
+     */
+    private static boolean shouldShowMenu;
+    /**
+     * EditText field to enter the product name
+     */
+    private EditText productNameEditText;
+    /**
+     * EditText field to enter the product price
+     */
+    private EditText productPriceEditText;
+    /**
+     * EditText field to enter the product quantity
+     */
+    private EditText productQuantityEditText;
+    /**
+     * EditText field to enter the product supplier name
+     */
+    private EditText productSupplierEditText;
+    /**
+     * EditText field to enter the product supplier phone number
+     */
+    private EditText productSupplierPhoneEditText;
+    /**
+     * Button allowing user to save the information about a product
+     */
+    private Button saveButton;
+    /**
+     * Button allowing user to call the supplier of a product
+     */
+    private Button orderButton;
+    /**
+     * Button allowing user to delete a product
+     */
+    private Button deleteButton;
+    /**
+     * Button allowing the user to increase the quantity of a product.
+     */
+    private Button increaseQuantityButton;
+    /**
+     * Button allowing the user to decrease the quantity of a product.
+     */
+    private Button decreaseQuantityButton;
+    /**
+     * Relative Layout holding the increase / decrease quantity buttons.
+     */
+    private RelativeLayout adjustQuantityRL;
+    /**
+     * Uri from the data field of the intent used to lauch InsertProductActivity
+     */
+    private Uri currentProductUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +130,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         // a result of the user's trying to insert a new product in the database
         // (currentProductUri == null) or due to the client selecting an existing product in order
         // to view its details.
-        if (currentProductUri == null){
+        if (currentProductUri == null) {
             setInInsertMode();
         } else {
             setInDisplayMode();
@@ -159,9 +148,9 @@ public class InsertProductActivity extends AppCompatActivity implements
                 String productName = productNameEditText.getText().toString().trim();
                 // if product name is empty, let user know that product name must be provided
                 // and return without saving the product
-                if(TextUtils.isEmpty(productName)){
+                if (TextUtils.isEmpty(productName)) {
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.product_name_required),Toast.LENGTH_SHORT).show();
+                            getString(R.string.product_name_required), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -170,12 +159,12 @@ public class InsertProductActivity extends AppCompatActivity implements
                 int productPrice;
 
                 // don't parse an empty String, otherwise the app will crash!!!
-                if (!TextUtils.isEmpty(productPriceString)){
+                if (!TextUtils.isEmpty(productPriceString)) {
                     productPrice = Integer.parseInt(productPriceString);
                 } else {
                     // let user know that price must be provided
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.product_price_not_null),Toast.LENGTH_SHORT).show();
+                            getString(R.string.product_price_not_null), Toast.LENGTH_SHORT).show();
                     // return without saving the product
                     return;
                 }
@@ -190,12 +179,12 @@ public class InsertProductActivity extends AppCompatActivity implements
                         productQuantityEditText.getText().toString().trim();
 
                 // don't parse an empty String, otherwise the app will crash!!!
-                if(!TextUtils.isEmpty(productQuantityString)) {
+                if (!TextUtils.isEmpty(productQuantityString)) {
                     productQuantity = Integer.parseInt(productQuantityString);
                 } else {
-                        // let user know that quantity must be provided
+                    // let user know that quantity must be provided
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.product_quantity_not_null),Toast.LENGTH_SHORT).show();
+                            getString(R.string.product_quantity_not_null), Toast.LENGTH_SHORT).show();
                     // return without saving the product
                     return;
                 }
@@ -203,9 +192,9 @@ public class InsertProductActivity extends AppCompatActivity implements
                 // if product supplier EditText is empty, let user know that product supplier name
                 // must be provided and return without saving the product
                 String productSupplier = productSupplierEditText.getText().toString().trim();
-                if(TextUtils.isEmpty(productSupplier)){
+                if (TextUtils.isEmpty(productSupplier)) {
                     Toast.makeText(getApplicationContext(),
-                            getString(R.string.product_supplier_required),Toast.LENGTH_SHORT).show();
+                            getString(R.string.product_supplier_required), Toast.LENGTH_SHORT).show();
                     // return without saving the product
                     return;
                 }
@@ -214,7 +203,7 @@ public class InsertProductActivity extends AppCompatActivity implements
                         productSupplierPhoneEditText.getText().toString().trim();
                 // if product supplier phone number EditText is empty, let user know that product
                 // supplier phone number must be provided and return without saving the product
-                if(TextUtils.isEmpty(productSupplierPhoneNumber)){
+                if (TextUtils.isEmpty(productSupplierPhoneNumber)) {
                     Toast.makeText(getApplicationContext(),
                             getString(R.string.product_supplier_phone_required),
                             Toast.LENGTH_SHORT).show();
@@ -283,10 +272,10 @@ public class InsertProductActivity extends AppCompatActivity implements
                         productSupplierPhoneEditText.getText().toString().trim();
 
                 // check if the user is viewing a dummy product
-                if (productSupplierPhoneNumber.equalsIgnoreCase(InventoryActivity.PRODUCT_SUPPLIER_PHONE_NUMBER)){
+                if (productSupplierPhoneNumber.equalsIgnoreCase(InventoryActivity.PRODUCT_SUPPLIER_PHONE_NUMBER)) {
                     // let the user know they cannot call the supplier of a dummy product
                     Toast.makeText(InsertProductActivity.this,
-                            getString(R.string.call_dummy_product_supplier),Toast.LENGTH_SHORT).show();
+                            getString(R.string.call_dummy_product_supplier), Toast.LENGTH_SHORT).show();
                 } else {
                     // prepare intent to start phone app to call the supplier phone number
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
@@ -298,7 +287,7 @@ public class InsertProductActivity extends AppCompatActivity implements
                     } else {
                         // let the user know the device doesn't have an app to handle making phone calls
                         Toast.makeText(InsertProductActivity.this,
-                                getString(R.string.no_phone_app),Toast.LENGTH_SHORT).show();
+                                getString(R.string.no_phone_app), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -357,7 +346,7 @@ public class InsertProductActivity extends AppCompatActivity implements
                 int productQuantity = Integer.parseInt(productQuantityString);
 
                 // decrement product quantity, as long as it is >0.
-                if (productQuantity>0) {
+                if (productQuantity > 0) {
                     productQuantity--;
                 } else {
                     // let the user know quantity cannot be lower than 0.
@@ -410,7 +399,7 @@ public class InsertProductActivity extends AppCompatActivity implements
      * helper method for setting up particular views in the right mode for displaying product
      * information
      */
-    private void setViewsInDisplayMode(){
+    private void setViewsInDisplayMode() {
         // in product display mode, the menu should be visible
         shouldShowMenu = true;
         // Declare that the options menu has changed, so should be recreated.
@@ -453,7 +442,7 @@ public class InsertProductActivity extends AppCompatActivity implements
      * helper method for setting up particular views in the right mode for editing / inserting
      * product information
      */
-    private void setViewsInEditMode(){
+    private void setViewsInEditMode() {
         shouldShowMenu = false;
         // Declare that the options menu has changed, so should be recreated.
         invalidateOptionsMenu();
@@ -510,7 +499,7 @@ public class InsertProductActivity extends AppCompatActivity implements
 
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor - we are looking at one single product)
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             // Find the indices of the columns of product attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(
                     ProductContract.ProductEntry.COLUMN_PRODUCT_NAME);
@@ -584,7 +573,7 @@ public class InsertProductActivity extends AppCompatActivity implements
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_edit_product){
+        if (item.getItemId() == R.id.action_edit_product) {
             getSupportActionBar().setTitle(R.string.edit_product_details_label);
             setViewsInEditMode();
             return true;
@@ -592,4 +581,32 @@ public class InsertProductActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(KEY_MODE, shouldShowMenu);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        shouldShowMenu = savedInstanceState.getBoolean(KEY_MODE);
+
+        // determine the mode in which the layout should be presented - in display mode or in
+        // edit mode
+        if (shouldShowMenu) {
+            setViewsInDisplayMode();
+        } else {
+            if (currentProductUri == null) {
+                // in insert product mode
+                getSupportActionBar().setTitle(R.string.insert_product_activity_label);
+            } else {
+                // in edit product mode
+                getSupportActionBar().setTitle(R.string.edit_product_details_label);
+            }
+            setViewsInEditMode();
+        }
+        // Declare that the options menu has changed, so should be recreated.
+        invalidateOptionsMenu();
+    }
 }
