@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/no_height"
+        android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
@@ -17,20 +18,29 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                style="@style/text.insertTextView"
+                android:text="@string/product_name"/>
+
             <EditText
                 android:id="@+id/edit_text_product_name"
-                style="@style/text.editText.textInput"
-                android:hint="@string/product_name" />
+                style="@style/text.editText.textInput" />
+
+            <TextView
+                style="@style/text.insertTextView"
+                android:text="@string/product_price"/>
 
             <EditText
                 android:id="@+id/edit_text_product_price"
-                style="@style/text.editText.numberInput"
-                android:hint="@string/product_price" />
+                style="@style/text.editText.numberInput" />
+
+            <TextView
+                style="@style/text.insertTextView"
+                android:text="@string/product_quantity"/>
 
             <EditText
                 android:id="@+id/edit_text_product_quantity"
-                style="@style/text.editText.numberInput"
-                android:hint="@string/product_quantity" />
+                style="@style/text.editText.numberInput" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -58,51 +68,58 @@
 
             </RelativeLayout>
 
+            <TextView
+                style="@style/text.insertTextView"
+                android:text="@string/product_supplier"/>
+
             <EditText
                 android:id="@+id/edit_text_product_supplier"
-                style="@style/text.editText.textInput"
-                android:hint="@string/product_supplier" />
+                style="@style/text.editText.textInput" />
+
+            <TextView
+                style="@style/text.insertTextView"
+                android:text="@string/product_supplier_phone"/>
 
             <EditText
                 android:id="@+id/edit_text_product_supplier_phone"
-                style="@style/text.editText.phoneInput"
-                android:hint="@string/product_supplier_phone" />
+                style="@style/text.editText.phoneInput" />
 
         </LinearLayout>
 
     </ScrollView>
 
-    <Button
-        style="@style/button"
-        android:id="@+id/button_save_insert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/save_button_insert" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        style="@style/button"
-        android:id="@+id/button_order_insert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/order_button_insert"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/button_order_margin_start"
-        android:visibility="gone"/>
+        <Button
+            style="@style/button"
+            android:id="@+id/button_save_insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/save_button_insert" />
 
-    <Button
-        style="@style/button"
-        android:id="@+id/button_delete_insert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/delete_button_insert"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/button_delete_margin_end"
-        android:visibility="gone"/>
+        <Button
+            style="@style/button"
+            android:id="@+id/button_order_insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/order_button_insert"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/button_order_margin_start"
+            android:visibility="gone"/>
 
-</RelativeLayout>
+        <Button
+            style="@style/button"
+            android:id="@+id/button_delete_insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_button_insert"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/button_delete_margin_end"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

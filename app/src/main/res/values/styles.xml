@@ -41,6 +41,17 @@
         <item name="android:imeOptions">flagNoExtractUi</item>
     </style>
 
+    <style name="text.insertTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/textViewInsertMarginStart</item>
+        <item name="android:layout_marginEnd">@dimen/textViewInsertMarginEnd</item>
+        <item name="android:layout_marginTop">@dimen/textViewInsertMarginTop</item>
+        <item name="android:layout_marginBottom">@dimen/textViewInsertMarginBottom</item>
+        <item name="android:textSize">@dimen/textViewInsertSize</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="text.editText.textInput">
         <item name="android:inputType">text</item>
     </style>
