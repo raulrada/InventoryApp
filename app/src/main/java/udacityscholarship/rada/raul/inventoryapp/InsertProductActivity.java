@@ -207,20 +207,42 @@ public class InsertProductActivity extends AppCompatActivity implements
                 values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER,
                         productSupplierPhoneNumber);
 
-                // Insert a new product into the provider, returning the content URI for the
-                // new product.
-                Uri newUri = getContentResolver().insert(
-                        ProductContract.ProductEntry.CONTENT_URI, values);
+                // determine whether this is a new or an existing product
+                // (if currentProductUri == null, then it's a new product)
+                if (currentProductUri == null) {
+                    // Insert a new product into the provider, returning the content URI for the
+                    // new product.
+                    Uri newUri = getContentResolver().insert(
+                            ProductContract.ProductEntry.CONTENT_URI, values);
 
-                // Show a toast message depending on whether or not the insertion was successful
-                if (newUri == null) {
-                    // If the new content URI is null, then there was an error with insertion.
-                    Toast.makeText(getApplicationContext(), getString(R.string.product_save_error),
-                            Toast.LENGTH_SHORT).show();
+                    // Show a toast message depending on whether or not the insertion was successful
+                    if (newUri == null) {
+                        // If the new content URI is null, then there was an error with insertion.
+                        Toast.makeText(getApplicationContext(), getString(R.string.product_save_error),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Otherwise, the insertion was successful and we can display a toast.
+                        Toast.makeText(getApplicationContext(), getString(R.string.product_save_successful),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    // Otherwise, the insertion was successful and we can display a toast.
-                    Toast.makeText(getApplicationContext(), getString(R.string.product_save_successful),
-                            Toast.LENGTH_SHORT).show();
+                    // this is an existing product, so update the product with content URI
+                    // currentProductUri and pass in the new ContentValues. Pass in null for the
+                    // selection and selection args because currentProductUri will already identify
+                    // the correct row in the database that we want to modify.
+                    int rowsAffected = getContentResolver().update(
+                            currentProductUri, values, null, null);
+
+                    // check if the update failed
+                    if (rowsAffected == 0) {
+                        // product update failed
+                        Toast.makeText(getApplicationContext(), getString(R.string.product_update_error),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        // product update successful
+                        Toast.makeText(getApplicationContext(), getString(R.string.product_update_successful),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 // set up particular views in the right mode for displaying product information
