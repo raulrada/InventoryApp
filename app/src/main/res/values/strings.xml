@@ -26,6 +26,8 @@
     <string name="product_price_not_null">Product price must be provided!</string>
     <string name="product_price_positive">Product price must be positive!</string>
     <string name="product_quantity_positive">Product quantity must be positive!</string>
+    <string name="product_quantity_not_null">Product quantity must be provided!</string>
+
     <string name="product_supplier_required">Product requires a supplier!</string>
     <string name="product_supplier_phone_required">The phone number of the supplier is required!</string>
 

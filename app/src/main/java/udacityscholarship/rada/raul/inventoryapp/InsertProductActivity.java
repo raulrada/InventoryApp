@@ -166,13 +166,19 @@ public class InsertProductActivity extends AppCompatActivity implements
                 // current quantity of 0 - the code allows for this on purpose, and therefore
                 // the code allows the edit text containing the product quantity information to be
                 // empty.
-                int productQuantity = NO_QUANTITY;
+                int productQuantity;
                 String productQuantityString =
                         productQuantityEditText.getText().toString().trim();
 
                 // don't parse an empty String, otherwise the app will crash!!!
                 if(!TextUtils.isEmpty(productQuantityString)) {
                     productQuantity = Integer.parseInt(productQuantityString);
+                } else {
+                        // let user know that quantity must be provided
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.product_quantity_not_null),Toast.LENGTH_SHORT).show();
+                    // return without saving the product
+                    return;
                 }
 
                 // if product supplier EditText is empty, let user know that product supplier name
