@@ -32,6 +32,32 @@
                 style="@style/text.editText.numberInput"
                 android:hint="@string/product_quantity" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/adjust_quantity_relative_layout"
+                android:visibility="gone">
+
+                <Button
+                    style="@style/button"
+                    android:id="@+id/button_decrease_quantity"
+                    android:layout_width="@dimen/adjust_quantity_button_width"
+                    android:layout_height="@dimen/adjust_quantity_button_height"
+                    android:text="@string/decrease_quantity_button_insert"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/button_order_margin_start" />
+
+                <Button
+                    style="@style/button"
+                    android:id="@+id/button_increase_quantity"
+                    android:layout_width="@dimen/adjust_quantity_button_width"
+                    android:layout_height="@dimen/adjust_quantity_button_height"
+                    android:text="@string/increase_quantity_button_insert"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/button_delete_margin_end" />
+
+            </RelativeLayout>
+
             <EditText
                 android:id="@+id/edit_text_product_supplier"
                 style="@style/text.editText.textInput"

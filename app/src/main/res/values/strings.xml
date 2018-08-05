@@ -21,6 +21,8 @@
     <string name="save_button_insert">Save</string>
     <string name="order_button_insert">Order</string>
     <string name="delete_button_insert">Delete</string>
+    <string name="decrease_quantity_button_insert">-</string>
+    <string name="increase_quantity_button_insert">+</string>
 
     <string name="product_name_required">Product requires a name!</string>
     <string name="product_price_not_null">Product price must be provided!</string>

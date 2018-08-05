@@ -11,6 +11,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -70,6 +71,21 @@ public class InsertProductActivity extends AppCompatActivity implements
     private Button deleteButton;
 
     /**
+     * Button allowing the user to increase the quantity of a product.
+     */
+    private Button increaseQuantityButton;
+
+    /**
+     * Button allowing the user to decrease the quantity of a product.
+     */
+    private Button decreaseQuantityButton;
+
+    /**
+     * Relative Layout holding the increase / decrease quantity buttons.
+     */
+    private RelativeLayout adjustQuantityRL;
+
+    /**
      * Uri from the data field of the intent used to lauch InsertProductActivity
      */
     private Uri currentProductUri;
@@ -109,6 +125,9 @@ public class InsertProductActivity extends AppCompatActivity implements
         saveButton = (Button) findViewById(R.id.button_save_insert);
         orderButton = (Button) findViewById(R.id.button_order_insert);
         deleteButton = (Button) findViewById(R.id.button_delete_insert);
+        increaseQuantityButton = (Button) findViewById(R.id.button_increase_quantity);
+        decreaseQuantityButton = (Button) findViewById(R.id.button_decrease_quantity);
+        adjustQuantityRL = (RelativeLayout) findViewById(R.id.adjust_quantity_relative_layout);
 
         // Get the intent used to launch the InsertProductActivity
         Intent intent = getIntent();
@@ -284,6 +303,46 @@ public class InsertProductActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        increaseQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get current quantity from the relevant EditText
+                String productQuantityString =
+                        productQuantityEditText.getText().toString().trim();
+
+                // get an integer value for the product quantity. Since we are guaranteed to see
+                // the increase quantity button only in product display mode, the value of
+                // productQuantityEditText is quaranteed not to be null.
+                int productQuantity = Integer.parseInt(productQuantityString);
+
+                // increment product quantity.
+                productQuantity++;
+
+                // Create a ContentValues object where column names are the keys, and the parameters
+                // supplied to the insertProduct method are the values.
+                ContentValues values = new ContentValues();
+                values.put(ProductContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
+
+                // this is an existing product, so update the product with content URI
+                // currentProductUri and pass in the new ContentValues. Pass in null for the
+                // selection and selection args because currentProductUri will already identify
+                // the correct row in the database that we want to modify.
+                int rowsAffected = getContentResolver().update(
+                        currentProductUri, values, null, null);
+
+                // check if the update failed
+                if (rowsAffected == 0) {
+                    // product update failed
+                    Toast.makeText(getApplicationContext(), getString(R.string.product_update_error),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // product update successful
+                    Toast.makeText(getApplicationContext(), getString(R.string.product_update_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     /**
@@ -317,6 +376,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         saveButton.setVisibility(View.GONE);
         orderButton.setVisibility(View.VISIBLE);
         deleteButton.setVisibility(View.VISIBLE);
+        adjustQuantityRL.setVisibility(View.VISIBLE);
         productNameEditText.setEnabled(false);
         productNameEditText.setInputType(InputType.TYPE_NULL);
         productPriceEditText.setEnabled(false);
@@ -355,6 +415,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         saveButton.setVisibility(View.VISIBLE);
         orderButton.setVisibility(View.GONE);
         deleteButton.setVisibility(View.GONE);
+        adjustQuantityRL.setVisibility(View.GONE);
         productNameEditText.setEnabled(true);
         productNameEditText.setInputType(InputType.TYPE_CLASS_TEXT);
         productPriceEditText.setEnabled(true);

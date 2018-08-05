@@ -28,4 +28,7 @@
     <dimen name="button_order_margin_start">30dp</dimen>
     <dimen name="button_delete_margin_end">30dp</dimen>
 
+    <dimen name="adjust_quantity_button_width">52dp</dimen>
+    <dimen name="adjust_quantity_button_height">52dp</dimen>
+
 </resources>
