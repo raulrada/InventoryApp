@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
@@ -62,14 +63,14 @@ public class InsertProductActivity extends AppCompatActivity implements
     private Button orderButton;
 
     /**
+     * Button allowing user to delete a product
+     */
+    private Button deleteButton;
+
+    /**
      * Uri from the data field of the intent used to lauch InsertProductActivity
      */
     private Uri currentProductUri;
-
-    /**
-     * default price is 0
-     */
-    private static final int NO_PRICE = 0;
 
     /**
      * default quantity is 0
@@ -82,19 +83,9 @@ public class InsertProductActivity extends AppCompatActivity implements
     private static final int EXISTING_PRODUCT_LOADER = 0;
 
     /**
-     * value for EditTexts inputType when in display product mode
-     */
-    private static final int NONE = 0;
-
-    /**
      * String value used for the call intent
      */
     private static final String TELEPHONE = "tel:";
-
-    /**
-     * request code for the call permission requested.
-     */
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +101,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         productSupplierPhoneEditText = (EditText) findViewById(R.id.edit_text_product_supplier_phone);
         saveButton = (Button) findViewById(R.id.button_save_insert);
         orderButton = (Button) findViewById(R.id.button_order_insert);
+        deleteButton = (Button) findViewById(R.id.button_delete_insert);
 
         // Get the intent used to launch the InsertProductActivity
         Intent intent = getIntent();
@@ -119,6 +111,10 @@ public class InsertProductActivity extends AppCompatActivity implements
         // set into the mode allowing for the insertion of a new product
         currentProductUri = intent.getData();
 
+        // The layout will be different depending on whether InsertProductActivity is launched as
+        // a result of the user's trying to insert a new product in the database
+        // (currentProductUri == null) or due to the client selecting an existing product in order
+        // to view its details.
         if (currentProductUri == null){
             setInInsertMode();
         } else {
@@ -220,13 +216,8 @@ public class InsertProductActivity extends AppCompatActivity implements
                             Toast.LENGTH_SHORT).show();
                 }
 
-                // clear EditTexts once the product was inserted, to facilitate the insertion of a
-                // new product.
-                productNameEditText.setText("");
-                productPriceEditText.setText("");
-                productQuantityEditText.setText("");
-                productSupplierEditText.setText("");
-                productSupplierPhoneEditText.setText("");
+                // set up particular views in the right mode for displaying product information
+                setViewsInDisplayMode();
             }
         });
 
@@ -260,28 +251,42 @@ public class InsertProductActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * method setting up the layout for displaying product information
+     */
     private void setInDisplayMode() {
-        getSupportActionBar().setTitle(R.string.display_product_details_label);
-
-        // if we just display the information about the product, the Save button should not be
-        // displayed, and the EditTexts should be disabled. inputType for the edit texts should
-        // also be set to NONE (0), in order to prevent the keyboard from showing on screen.
-        saveButton.setVisibility(View.GONE);
-        orderButton.setVisibility(View.VISIBLE);
-        productNameEditText.setEnabled(false);
-        productNameEditText.setInputType(NONE);
-        productPriceEditText.setEnabled(false);
-        productPriceEditText.setInputType(NONE);
-        productQuantityEditText.setEnabled(false);
-        productQuantityEditText.setInputType(NONE);
-        productSupplierEditText.setEnabled(false);
-        productSupplierEditText.setInputType(NONE);
-        productSupplierPhoneEditText.setEnabled(false);
-        productSupplierPhoneEditText.setInputType(NONE);
+        // set up particular views in the right mode for displaying product information
+        setViewsInDisplayMode();
 
         // Initialize a loader to read the product data from the database
         // and display the current values in the editor
         getLoaderManager().initLoader(EXISTING_PRODUCT_LOADER, null, this);
+    }
+
+    /**
+     * helper method for setting up particular views in the right mode for displaying product
+     * information
+     */
+    private void setViewsInDisplayMode(){
+        // set the title in the action bar
+        getSupportActionBar().setTitle(R.string.display_product_details_label);
+
+        // if we just display the information about the product, the Save button should not be
+        // displayed, and the EditTexts should be disabled. inputType for the edit texts should
+        // also be set to TYPE_NULL, in order to prevent the keyboard from showing on screen.
+        saveButton.setVisibility(View.GONE);
+        orderButton.setVisibility(View.VISIBLE);
+        deleteButton.setVisibility(View.VISIBLE);
+        productNameEditText.setEnabled(false);
+        productNameEditText.setInputType(InputType.TYPE_NULL);
+        productPriceEditText.setEnabled(false);
+        productPriceEditText.setInputType(InputType.TYPE_NULL);
+        productQuantityEditText.setEnabled(false);
+        productQuantityEditText.setInputType(InputType.TYPE_NULL);
+        productSupplierEditText.setEnabled(false);
+        productSupplierEditText.setInputType(InputType.TYPE_NULL);
+        productSupplierPhoneEditText.setEnabled(false);
+        productSupplierPhoneEditText.setInputType(InputType.TYPE_NULL);
     }
 
     private void setInInsertMode() {

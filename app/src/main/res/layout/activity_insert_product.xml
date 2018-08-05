@@ -63,6 +63,20 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="@string/order_button_insert"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/button_order_margin_start"
+        android:visibility="gone"/>
+
+    <Button
+        style="@style/button"
+        android:id="@+id/button_delete_insert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/delete_button_insert"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/button_delete_margin_end"
         android:visibility="gone"/>
 
 </RelativeLayout>

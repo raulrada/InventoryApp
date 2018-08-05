@@ -25,4 +25,7 @@
     <dimen name="buttonListItemMarginBottom">3dp</dimen>
     <dimen name="buttonListItemWidth">60dp</dimen>
 
+    <dimen name="button_order_margin_start">30dp</dimen>
+    <dimen name="button_delete_margin_end">30dp</dimen>
+
 </resources>
