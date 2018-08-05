@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -71,6 +73,11 @@ public class InsertProductActivity extends AppCompatActivity implements
      * Uri from the data field of the intent used to lauch InsertProductActivity
      */
     private Uri currentProductUri;
+
+    /**
+     * Variable showing whether the menu should be displayed or not.
+     */
+    private static boolean shouldShowMenu;
 
     /**
      * default quantity is 0
@@ -252,7 +259,7 @@ public class InsertProductActivity extends AppCompatActivity implements
     }
 
     /**
-     * method setting up the layout for displaying product information
+     * Method setting up the layout for displaying product information
      */
     private void setInDisplayMode() {
         // set up particular views in the right mode for displaying product information
@@ -268,6 +275,11 @@ public class InsertProductActivity extends AppCompatActivity implements
      * information
      */
     private void setViewsInDisplayMode(){
+        // in product display mode, the menu should be visible
+        shouldShowMenu = true;
+        // Declare that the options menu has changed, so should be recreated.
+        invalidateOptionsMenu();
+
         // set the title in the action bar
         getSupportActionBar().setTitle(R.string.display_product_details_label);
 
@@ -289,18 +301,42 @@ public class InsertProductActivity extends AppCompatActivity implements
         productSupplierPhoneEditText.setInputType(InputType.TYPE_NULL);
     }
 
+    /**
+     * Method setting up the layout for inserting information about a new product
+     */
     private void setInInsertMode() {
+        // set the title in the action bar
         getSupportActionBar().setTitle(R.string.insert_product_activity_label);
 
-        // if we are in insert mode, the Save button should be displayed, the orderButton should
-        // not be displayed, and the EditTexts should be enabled.
+        // set up particular views in the right mode for inserting / editing product information
+        setViewsInEditMode();
+    }
+
+    /**
+     * helper method for setting up particular views in the right mode for editing / inserting
+     * product information
+     */
+    private void setViewsInEditMode(){
+        shouldShowMenu = false;
+        // Declare that the options menu has changed, so should be recreated.
+        invalidateOptionsMenu();
+
+        // if we are in insert mode, the Save button should be displayed, the orderButton and the
+        // deleteButton should not be displayed, and the EditTexts should be enabled (and they
+        // should have the right InputTypes).
         saveButton.setVisibility(View.VISIBLE);
         orderButton.setVisibility(View.GONE);
+        deleteButton.setVisibility(View.GONE);
         productNameEditText.setEnabled(true);
+        productNameEditText.setInputType(InputType.TYPE_CLASS_TEXT);
         productPriceEditText.setEnabled(true);
+        productPriceEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         productQuantityEditText.setEnabled(true);
+        productQuantityEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         productSupplierEditText.setEnabled(true);
+        productSupplierEditText.setInputType(InputType.TYPE_CLASS_TEXT);
         productSupplierPhoneEditText.setEnabled(true);
+        productSupplierPhoneEditText.setInputType(InputType.TYPE_CLASS_PHONE);
     }
 
     @Override
@@ -374,4 +410,48 @@ public class InsertProductActivity extends AppCompatActivity implements
         productSupplierEditText.setText("");
         productSupplierPhoneEditText.setText("");
     }
+
+    /**
+     * Inflate menu options from res/menu/menu_insert.xml
+     *
+     * @param menu to be inflated
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_insert, menu);
+        return true;
+    }
+
+    /**
+     * This method is called after invalidateOptionsMenu(), so that the
+     * menu can be updated (some menu items can be hidden or made visible).
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem menuItem = menu.findItem(R.id.action_edit_product);
+        // If this is a new pet, hide the "Delete" menu item.
+        if (!shouldShowMenu) {
+            menuItem.setVisible(false);
+        } else {
+            menuItem.setVisible(true);
+        }
+        return true;
+    }
+
+    /**
+     * Determines what happens when user clicks on item in the menu
+     *
+     * @param item selected by user from the menu
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_edit_product){
+            getSupportActionBar().setTitle(R.string.edit_product_details_label);
+            setViewsInEditMode();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

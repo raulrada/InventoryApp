@@ -186,7 +186,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      * Determines what happens when user clicks on item in the menu
      *
      * @param item selected by user from the menu
-     * @return
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

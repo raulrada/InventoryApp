@@ -5,10 +5,12 @@
     <string name="inventory_activity_label">List of Products</string>
     <string name="insert_product_activity_label">Insert Product</string>
     <string name="display_product_details_label">Product Details</string>
+    <string name="edit_product_details_label">Edit Product Details</string>
 
     <string name="action_insert_products">Insert products</string>
     <string name="action_insert_individual_product">Insert individual products</string>
     <string name="action_insert_dummy_products">Insert dummy products</string>
+    <string name="action_edit_product">Edit</string>
 
     <string name="product_name">Product Name:</string>
     <string name="product_price">Product Price:</string>
