@@ -31,10 +31,6 @@ public class InsertProductActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
-     * default quantity is 0
-     */
-    private static final int NO_QUANTITY = 0;
-    /**
      * Identifier for the product data loader
      */
     private static final int EXISTING_PRODUCT_LOADER = 0;
@@ -46,6 +42,10 @@ public class InsertProductActivity extends AppCompatActivity implements
      * String key for saving the state of the method in onSaveInstanceState.
      */
     private static final String KEY_MODE = "mode";
+    /**
+     * String key for saving currentProductUri in onSaveInstanceState
+     */
+    private static final String KEY_URI = "uri";
     /**
      * Variable showing whether the menu should be displayed or not.
      */
@@ -235,7 +235,10 @@ public class InsertProductActivity extends AppCompatActivity implements
                         Toast.makeText(getApplicationContext(), getString(R.string.product_save_error),
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        // Otherwise, the insertion was successful and we can display a toast.
+                        // Otherwise, the insertion was successful, we have a current URI for the
+                        // product being displayed after it was saved into the database, and we can
+                        // display a toast confirming the saving of the product.
+                        currentProductUri = newUri;
                         Toast.makeText(getApplicationContext(), getString(R.string.product_save_successful),
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -583,7 +586,11 @@ public class InsertProductActivity extends AppCompatActivity implements
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        // save the layout mode for the current activity
         savedInstanceState.putBoolean(KEY_MODE, shouldShowMenu);
+        // save the currentProductUri - in case it was not passed by the activity calling
+        // InsertProductActivity, but rather it was generated in the current activity.
+        savedInstanceState.putParcelable(KEY_URI, currentProductUri);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -591,6 +598,7 @@ public class InsertProductActivity extends AppCompatActivity implements
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         shouldShowMenu = savedInstanceState.getBoolean(KEY_MODE);
+        currentProductUri = savedInstanceState.getParcelable(KEY_URI);
 
         // determine the mode in which the layout should be presented - in display mode or in
         // edit mode
