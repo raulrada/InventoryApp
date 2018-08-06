@@ -297,7 +297,12 @@ public class InsertProductActivity extends AppCompatActivity implements
                     }
                 }
 
-                // set up particular views in the right mode for displaying product information
+                // Once the Save button has been pressed, the changes to the product details have
+                // been saved - there are no other unsaved changes the user should be aware about.
+                productHasChanged = false;
+
+                // Once the product details have been saved, set up particular views in the right
+                // mode for displaying product information
                 setViewsInDisplayMode();
             }
         });
