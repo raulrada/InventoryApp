@@ -19,6 +19,10 @@
     <dimen name="textViewListItemTitleTextSize">17sp</dimen>
     <dimen name="textViewListItemRegularTextSize">14sp</dimen>
 
+    <!-- ListView dimensions -->
+    <dimen name="listViewMarginStart">3dp</dimen>
+    <dimen name="listViewMarginEnd">3dp</dimen>
+
     <!-- TextView dimensions for activity_insert_product -->
     <dimen name="textViewInsertMarginStart">20dp</dimen>
     <dimen name="textViewInsertMarginEnd">20dp</dimen>
