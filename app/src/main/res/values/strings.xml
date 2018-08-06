@@ -53,4 +53,9 @@
 
     <string name="no_phone_app">It looks like your device does not have an app that can handle phone calls.</string>
     <string name="call_dummy_product_supplier">You are viewing a dummy product.\nYou cannot call its supplier</string>
+    
+    <string name="unsaved_changes_dialogue_message">Do you want to discard your changes?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    
 </resources>

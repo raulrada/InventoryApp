@@ -1,16 +1,22 @@
+// inspired by Udacity code at https://github.com/udacity/ud845-Pets/blob/lesson-four/app/src/main/java/com/example/android/pets/EditorActivity.java
+
 package udacityscholarship.rada.raul.inventoryapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
@@ -46,6 +52,10 @@ public class InsertProductActivity extends AppCompatActivity implements
      * String key for saving currentProductUri in onSaveInstanceState
      */
     private static final String KEY_URI = "uri";
+    /**
+     * String key for saving productHasChanged in onSaveInstanceState
+     */
+    private static final String KEY_PRODUCT_CHANGED = "product has changed";
     /**
      * Variable showing whether the menu should be displayed or not.
      */
@@ -98,6 +108,22 @@ public class InsertProductActivity extends AppCompatActivity implements
      * Uri from the data field of the intent used to lauch InsertProductActivity
      */
     private Uri currentProductUri;
+    /**
+     * Shows whether the product details have changed.
+     */
+    private boolean productHasChanged;
+
+    /**
+     * OnTouchListener that listens for any user touches on a View, implying that they are modifying
+     * the view, and we change the productHasChanged boolean to true.
+     */
+    private View.OnTouchListener viewTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            productHasChanged = true;
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +143,15 @@ public class InsertProductActivity extends AppCompatActivity implements
         increaseQuantityButton = (Button) findViewById(R.id.button_increase_quantity);
         decreaseQuantityButton = (Button) findViewById(R.id.button_decrease_quantity);
         adjustQuantityRL = (RelativeLayout) findViewById(R.id.adjust_quantity_relative_layout);
+
+        // Setup OnTouchListeners on all the input fields, so we can determine if the user
+        // has touched or modified them. This will let us know if there are unsaved changes
+        // or not, if the user tries to leave the editor without saving.
+        productNameEditText.setOnTouchListener(viewTouchListener);
+        productPriceEditText.setOnTouchListener(viewTouchListener);
+        productQuantityEditText.setOnTouchListener(viewTouchListener);
+        productSupplierEditText.setOnTouchListener(viewTouchListener);
+        productSupplierPhoneEditText.setOnTouchListener(viewTouchListener);
 
         // Get the intent used to launch the InsertProductActivity
         Intent intent = getIntent();
@@ -560,7 +595,7 @@ public class InsertProductActivity extends AppCompatActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem menuItem = menu.findItem(R.id.action_edit_product);
-        // If this is a new pet, hide the "Delete" menu item.
+        // If this is a new product, hide the "Delete" menu item.
         if (!shouldShowMenu) {
             menuItem.setVisible(false);
         } else {
@@ -576,29 +611,90 @@ public class InsertProductActivity extends AppCompatActivity implements
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_edit_product) {
-            getSupportActionBar().setTitle(R.string.edit_product_details_label);
-            setViewsInEditMode();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_edit_product:
+                getSupportActionBar().setTitle(R.string.edit_product_details_label);
+                setViewsInEditMode();
+                return true;
+            case android.R.id.home:
+                // If the product hasn't changed, continue with navigating up to parent activity
+                // which is the {@link InventoryActivity}.
+                if (!productHasChanged) {
+                    NavUtils.navigateUpFromSameTask(InsertProductActivity.this);
+                    return true;
+                }
+                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+                // Create a click listener to handle the user confirming that
+                // changes should be discarded.
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // User clicked "Discard" button, navigate to parent activity.
+                                NavUtils.navigateUpFromSameTask(
+                                        InsertProductActivity.this);
+                            }
+                        };
+
+                // Show a dialog that notifies the user they have unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Show a dialog that warns the user there are unsaved changes that will be lost
+     * if they continue leaving the editor.
+     *
+     * @param discardButtonClickListener is the click listener for what to do when
+     *                                   the user confirms they want to discard their changes
+     */
+    private void showUnsavedChangesDialog(
+            DialogInterface.OnClickListener discardButtonClickListener) {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.unsaved_changes_dialogue_message);
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
+        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User clicked the "Keep editing" button, so dismiss the dialog
+                // and continue editing the product.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // save the layout mode for the current activity
         savedInstanceState.putBoolean(KEY_MODE, shouldShowMenu);
+
         // save the currentProductUri - in case it was not passed by the activity calling
         // InsertProductActivity, but rather it was generated in the current activity.
+
         savedInstanceState.putParcelable(KEY_URI, currentProductUri);
+        // save the state of the productHasChanged variable
+        savedInstanceState.putBoolean(KEY_PRODUCT_CHANGED, productHasChanged);
+
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        // restore the state of various variables
         shouldShowMenu = savedInstanceState.getBoolean(KEY_MODE);
         currentProductUri = savedInstanceState.getParcelable(KEY_URI);
+        productHasChanged = savedInstanceState.getBoolean(KEY_PRODUCT_CHANGED);
 
         // determine the mode in which the layout should be presented - in display mode or in
         // edit mode
@@ -617,4 +713,31 @@ public class InsertProductActivity extends AppCompatActivity implements
         // Declare that the options menu has changed, so should be recreated.
         invalidateOptionsMenu();
     }
+
+    /**
+     * This method is called when the back button is pressed.
+     */
+    @Override
+    public void onBackPressed() {
+        // If the product hasn't changed, continue with handling back button press
+        if (!productHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+
+        // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+        // Create a click listener to handle the user confirming that changes should be discarded.
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User clicked "Discard" button, close the current activity.
+                        finish();
+                    }
+                };
+
+        // Show dialog that there are unsaved changes
+        showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
 }
