@@ -600,7 +600,7 @@ public class InsertProductActivity extends AppCompatActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem menuItem = menu.findItem(R.id.action_edit_product);
-        // If this is a new product, hide the "Delete" menu item.
+        // If this is a new product, hide the menu items.
         if (!shouldShowMenu) {
             menuItem.setVisible(false);
         } else {
