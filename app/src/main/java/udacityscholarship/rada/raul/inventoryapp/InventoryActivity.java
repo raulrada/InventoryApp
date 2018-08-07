@@ -75,6 +75,10 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      * ID of the last product in the database - useful when inserting dummy products.
      */
     private int lastProductId;
+    /**
+     * Flag showing whether the saving of dummy products was successful or not
+     */
+    private boolean saveSuccessful;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,12 +182,10 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         // Show a toast message depending on whether or not the insertion was successful
         if (newUri == null) {
             // If the new content URI is null, then there was an error with insertion.
-            Toast.makeText(getApplicationContext(), getString(R.string.product_save_error),
-                    Toast.LENGTH_SHORT).show();
+            saveSuccessful = false;
         } else {
-            // Otherwise, the insertion was successful and we can display a toast.
-            Toast.makeText(getApplicationContext(), getString(R.string.product_save_successful),
-                    Toast.LENGTH_SHORT).show();
+            // Otherwise, the insertion was successful.
+            saveSuccessful = true;
         }
     }
 
@@ -230,6 +232,14 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                     insertProduct(productName, productPrice, productQuantity, productSupplier,
                             PRODUCT_SUPPLIER_PHONE_NUMBER);
                 }
+                // Show a toast message depending on whether or not the insertion was successful
+                if (!saveSuccessful) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.products_save_error),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.products_save_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
                 return true;
 
             // The user chose the delete all products option:
@@ -245,7 +255,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      */
     private void showDeleteConfirmationDialog() {
         // Check if the products list is already empty
-        if(productCursorAdapter.getCount() == 0){
+        if (productCursorAdapter.getCount() == 0) {
             // let the user know there is nothing to delete
             Toast.makeText(this, getString(R.string.nothing_to_delete),
                     Toast.LENGTH_SHORT).show();
@@ -281,20 +291,20 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      * Method deleting all products in the database
      */
     private void deleteAllProducts() {
-            // try to delete all items in the database
-            int rowsDeleted = getContentResolver().delete(ProductContract.ProductEntry.CONTENT_URI,
-                    null, null);
+        // try to delete all items in the database
+        int rowsDeleted = getContentResolver().delete(ProductContract.ProductEntry.CONTENT_URI,
+                null, null);
 
-            // Show a toast message depending on whether or not the delete was successful.
-            if (rowsDeleted == 0) {
-                // If no rows were deleted, then there was an error with the delete.
-                Toast.makeText(this, getString(R.string.database_delete_failure),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.database_delete_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
+        // Show a toast message depending on whether or not the delete was successful.
+        if (rowsDeleted == 0) {
+            // If no rows were deleted, then there was an error with the delete.
+            Toast.makeText(this, getString(R.string.database_delete_failure),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the delete was successful and we can display a toast.
+            Toast.makeText(this, getString(R.string.database_delete_successful),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

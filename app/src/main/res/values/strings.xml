@@ -39,6 +39,10 @@
     <string name="product_save_error">Error with saving product.</string>
     <string name="product_save_successful">Product saved.</string>
 
+    <!-- Toast messages related to user's attempt to save a list of products -->
+    <string name="products_save_error">Error with saving dummy products.</string>
+    <string name="products_save_successful">Dummy products saved.</string>
+
     <!-- Toast messages related to user's attempt to delete a single product -->
     <string name="editor_delete_failure">Failed to delete product.</string>
     <string name="editor_delete_successful">Product successfully deleted.</string>
