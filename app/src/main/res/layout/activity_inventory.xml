@@ -20,4 +20,13 @@
         android:layout_centerInParent="true"
         android:gravity="center"/>
 
+    <Button
+        android:id="@+id/add_product_button"
+        android:layout_width="@dimen/add_button_width"
+        android:layout_height="@dimen/add_button_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/plus_vector"
+        android:layout_margin="@dimen/add_button_margin"/>
+
 </RelativeLayout>

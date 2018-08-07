@@ -14,6 +14,7 @@ import android.content.Loader;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -78,6 +79,9 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         //a different app label displayed on user's device vs. the label of the launcher activity
         getSupportActionBar().setTitle(R.string.inventory_activity_label);
 
+        // find the add_product button
+        Button addProductButton = (Button) findViewById(R.id.add_product_button);
+
         // find the ListView displaying data about products and the text view which will be
         // displayed when the ListView is empty
         ListView productsListView = (ListView) findViewById(R.id.products_list_view);
@@ -114,6 +118,19 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
 
                 // Set the URI on the data field of the intent
                 startInsertProductActivityIntent.setData(currentProductUri);
+
+                // launch InsertProductActivity
+                startActivity(startInsertProductActivityIntent);
+            }
+        });
+
+        // set action to be completed when the user clicks on the add_product button
+        addProductButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // intent to go to InsertProductActivity
+                Intent startInsertProductActivityIntent = new Intent(
+                        InventoryActivity.this, InsertProductActivity.class);
 
                 // launch InsertProductActivity
                 startActivity(startInsertProductActivityIntent);
@@ -195,15 +212,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
     public boolean onOptionsItemSelected(MenuItem item) {
         //determine what item was clicked by user and perform appropriate action
         switch (item.getItemId()) {
-            case R.id.action_insert_individual_product:
-                // intent to go to InsertProductActivity
-                Intent startInsertProductActivityIntent = new Intent(
-                        InventoryActivity.this, InsertProductActivity.class);
-
-                // launch InsertProductActivity
-                startActivity(startInsertProductActivityIntent);
-                return true;
-
             case R.id.action_insert_dummy_products:
                 // insert a number of dummy products
                 for (int i = 0; i < MAX_DUMMY_PRODUCTS; i++) {

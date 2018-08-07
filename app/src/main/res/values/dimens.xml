@@ -4,6 +4,11 @@
     <dimen name="no_width">0dp</dimen>
     <dimen name="no_height">0dp</dimen>
 
+    <!-- add_product button dimensions -->
+    <dimen name="add_button_margin">20dp</dimen>
+    <dimen name="add_button_height">55dp</dimen>
+    <dimen name="add_button_width">55dp</dimen>
+
     <!-- EditText dimensions -->
     <dimen name="editTextMarginStart">20dp</dimen>
     <dimen name="editTextMarginEnd">20dp</dimen>
