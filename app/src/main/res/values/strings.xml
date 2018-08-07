@@ -24,23 +24,31 @@
     <string name="decrease_quantity_button_insert">-</string>
     <string name="increase_quantity_button_insert">+</string>
 
+    <!-- Toast messages informing the client of the required fields for a proper product storing in the database -->
     <string name="product_name_required">Product requires a name!</string>
     <string name="product_price_not_null">Product price must be provided!</string>
     <string name="product_price_positive">Product price must be positive!</string>
     <string name="product_quantity_positive">Product quantity must be positive!</string>
     <string name="product_quantity_not_null">Product quantity must be provided!</string>
-
     <string name="product_supplier_required">Product requires a supplier!</string>
     <string name="product_supplier_phone_required">The phone number of the supplier is required!</string>
 
+    <!-- Toast messages related to user's attempt to save a product -->
     <string name="product_save_error">Error with saving product.</string>
     <string name="product_save_successful">Product saved.</string>
 
+    <!-- Toast messages related to user's attempt to delete a single product -->
+    <string name="editor_delete_failure">Failed to delete product.</string>
+    <string name="editor_delete_successful">Product successfully deleted.</string>
+
+    <!-- Toast messages related to user's attempt to update the details of a product -->
     <string name="product_update_error">Error with updating product.</string>
     <string name="product_update_successful">Product updated.</string>
 
+    <!-- Error message displayed when the user tries to reduce the quantity of a product below 0 -->
     <string name="quantity_error">Product quantity cannot be lower than 0.</string>
 
+    <!-- Toast message confirming to user the sale of a product -->
     <string name="product_sold">Selling product.</string>
 
     <string name="list_item_sell">Sell</string>
@@ -53,9 +61,15 @@
 
     <string name="no_phone_app">It looks like your device does not have an app that can handle phone calls.</string>
     <string name="call_dummy_product_supplier">You are viewing a dummy product.\nYou cannot call its supplier</string>
-    
+
+    <!-- Unsaved product changes dialogue -->
     <string name="unsaved_changes_dialogue_message">Do you want to discard your changes?</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep editing</string>
-    
+
+    <!-- Delete product dialogue -->
+    <string name="delete_dialog_msg">Are you sure you want to delete this product?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

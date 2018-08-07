@@ -172,7 +172,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         }
 
         /**
-         * determine the behaviour of the save button
+         * Determine the behaviour of the save button
          */
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -307,6 +307,9 @@ public class InsertProductActivity extends AppCompatActivity implements
             }
         });
 
+        /**
+         * Action to be performed when user clicks the order button
+         */
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -336,6 +339,9 @@ public class InsertProductActivity extends AppCompatActivity implements
             }
         });
 
+        /**
+         * Action to be performed when user clicks the increase quantity button
+         */
         increaseQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -376,6 +382,9 @@ public class InsertProductActivity extends AppCompatActivity implements
             }
         });
 
+        /**
+         * Action to be performed when user clicks the decrease quantity button
+         */
         decreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -424,6 +433,16 @@ public class InsertProductActivity extends AppCompatActivity implements
             }
         });
 
+        /**
+         * Action to be performed when the user clicks the delete button
+         */
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Ask user to confirm intention to delete the current product
+                showDeleteConfirmationDialog();
+            }
+        });
     }
 
     /**
@@ -439,7 +458,7 @@ public class InsertProductActivity extends AppCompatActivity implements
     }
 
     /**
-     * helper method for setting up particular views in the right mode for displaying product
+     * Helper method for setting up particular views in the right mode for displaying product
      * information
      */
     private void setViewsInDisplayMode() {
@@ -482,12 +501,12 @@ public class InsertProductActivity extends AppCompatActivity implements
     }
 
     /**
-     * helper method for setting up particular views in the right mode for editing / inserting
+     * Helper method for setting up particular views in the right mode for editing / inserting
      * product information
      */
     private void setViewsInEditMode() {
         shouldShowMenu = false;
-        // Declare that the options menu has changed, so should be recreated.
+        // Declare that the options menu has changed, so it should be recreated.
         invalidateOptionsMenu();
 
         // if we are in insert mode, the Save button should be displayed, the orderButton and the
@@ -676,6 +695,57 @@ public class InsertProductActivity extends AppCompatActivity implements
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    /**
+     * Ask for user's confirmation that they want to delete this product.
+     */
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Delete the pet if user so chooses
+                deleteProduct();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User chose not to delete the product, so dismiss the dialog
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deleteProduct(){
+        // If the Delete button is visible, we know for sure that the user is in product info
+        // display mode, and that {@link currentProductUri} is not null
+        int rowsDeleted = getContentResolver().delete(currentProductUri,
+                null, null);
+
+        // Show a toast message depending on whether or not the delete was successful.
+        if (rowsDeleted == 0) {
+            // If no rows were deleted, then there was an error with the delete.
+            Toast.makeText(this, getString(R.string.editor_delete_failure),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the delete was successful and we can display a toast.
+            Toast.makeText(this, getString(R.string.editor_delete_successful),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Close the activity
+        finish();
     }
 
     @Override
