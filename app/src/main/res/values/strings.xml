@@ -7,9 +7,9 @@
     <string name="display_product_details_label">Product Details</string>
     <string name="edit_product_details_label">Edit Product Details</string>
 
-    <string name="action_insert_products">Insert products</string>
-    <string name="action_insert_individual_product">Insert individual products</string>
+    <!-- Strings user for menu items -->
     <string name="action_insert_dummy_products">Insert dummy products</string>
+    <string name="delete_all_products">Delete all products</string>
     <string name="action_edit_product">Edit</string>
 
     <string name="product_name">Product Name:</string>

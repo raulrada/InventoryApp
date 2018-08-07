@@ -4,9 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".InventoryActivity">
 
-            <item
-                android:id="@+id/action_insert_dummy_products"
-                android:title="@string/action_insert_dummy_products"
-                app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_insert_dummy_products"
+        android:title="@string/action_insert_dummy_products"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_delete_all_products"
+        android:title="@string/delete_all_products"
+        app:showAsAction="never" />
 
 </menu>
