@@ -67,6 +67,7 @@
     <!-- Text displayed in activity_inventory.xml when the database is empty -->
     <string name="empty_text">The products database is currently empty.\nPlease add products using the options in the menu in the app bar.</string>
 
+    <!-- Toast messages related to not being able to call the supplier of a product -->
     <string name="no_phone_app">It looks like your device does not have an app that can handle phone calls.</string>
     <string name="call_dummy_product_supplier">You are viewing a dummy product.\nYou cannot call its supplier</string>
 
@@ -76,13 +77,15 @@
     <string name="keep_editing">Keep editing</string>
 
     <!-- Delete single product dialogue -->
-    <string name="delete_dialog_msg">Are you sure you want to delete this product?\nThis operation cannot be undone</string>
+    <string name="delete_dialog_msg">Are you sure you want to delete this product?\nThis operation cannot be undone.</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 
     <!-- Delete all products dialogue -->
-    <string name="delete_all_dialog_msg">Are you sure you want to delete all products in the database?\nThis operation cannot be undone</string>
+    <string name="delete_all_dialog_msg">Are you sure you want to delete all products in the database?\nThis operation cannot be undone.</string>
     <string name="delete_all">Delete</string>
     <string name="cancel_all">Cancel</string>
+
+    <string name="nothing_to_delete">There are currently no products in the database to delete.</string>
 
 </resources>

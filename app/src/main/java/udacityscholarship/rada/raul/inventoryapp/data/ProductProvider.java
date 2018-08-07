@@ -171,7 +171,7 @@ public class ProductProvider extends ContentProvider {
         // Figure out if the URI matcher can match the URI to a specific code
         final int uriMatch = sUriMatcher.match(uri);
 
-        switch (uriMatch){
+        switch (uriMatch) {
             case PRODUCTS:
                 return ProductContract.ProductEntry.CONTENT_LIST_TYPE;
             case PRODUCT_ID:

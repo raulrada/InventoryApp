@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/app_background"
+    android:orientation="vertical"
     tools:context=".InsertProductActivity">
 
     <ScrollView
@@ -20,7 +20,7 @@
 
             <TextView
                 style="@style/text.insertTextView"
-                android:text="@string/product_name"/>
+                android:text="@string/product_name" />
 
             <EditText
                 android:id="@+id/edit_text_product_name"
@@ -28,7 +28,7 @@
 
             <TextView
                 style="@style/text.insertTextView"
-                android:text="@string/product_price"/>
+                android:text="@string/product_price" />
 
             <EditText
                 android:id="@+id/edit_text_product_price"
@@ -36,41 +36,41 @@
 
             <TextView
                 style="@style/text.insertTextView"
-                android:text="@string/product_quantity"/>
+                android:text="@string/product_quantity" />
 
             <EditText
                 android:id="@+id/edit_text_product_quantity"
                 style="@style/text.editText.numberInput" />
 
             <RelativeLayout
+                android:id="@+id/adjust_quantity_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/adjust_quantity_relative_layout"
                 android:visibility="gone">
 
                 <Button
-                    style="@style/button"
                     android:id="@+id/button_decrease_quantity"
+                    style="@style/button"
                     android:layout_width="@dimen/adjust_quantity_button_width"
                     android:layout_height="@dimen/adjust_quantity_button_height"
-                    android:text="@string/decrease_quantity_button_insert"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="@dimen/button_order_margin_start" />
+                    android:layout_marginStart="@dimen/button_order_margin_start"
+                    android:text="@string/decrease_quantity_button_insert" />
 
                 <Button
-                    style="@style/button"
                     android:id="@+id/button_increase_quantity"
+                    style="@style/button"
                     android:layout_width="@dimen/adjust_quantity_button_width"
                     android:layout_height="@dimen/adjust_quantity_button_height"
-                    android:text="@string/increase_quantity_button_insert"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/button_delete_margin_end" />
+                    android:layout_marginEnd="@dimen/button_delete_margin_end"
+                    android:text="@string/increase_quantity_button_insert" />
 
             </RelativeLayout>
 
             <TextView
                 style="@style/text.insertTextView"
-                android:text="@string/product_supplier"/>
+                android:text="@string/product_supplier" />
 
             <EditText
                 android:id="@+id/edit_text_product_supplier"
@@ -78,7 +78,7 @@
 
             <TextView
                 style="@style/text.insertTextView"
-                android:text="@string/product_supplier_phone"/>
+                android:text="@string/product_supplier_phone" />
 
             <EditText
                 android:id="@+id/edit_text_product_supplier_phone"
@@ -93,32 +93,32 @@
         android:layout_height="wrap_content">
 
         <Button
-            style="@style/button"
             android:id="@+id/button_save_insert"
+            style="@style/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/save_button_insert" />
 
         <Button
-            style="@style/button"
             android:id="@+id/button_order_insert"
+            style="@style/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/order_button_insert"
             android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/button_order_margin_start"
-            android:visibility="gone"/>
+            android:text="@string/order_button_insert"
+            android:visibility="gone" />
 
         <Button
-            style="@style/button"
             android:id="@+id/button_delete_insert"
+            style="@style/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/delete_button_insert"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/button_delete_margin_end"
-            android:visibility="gone"/>
+            android:text="@string/delete_button_insert"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

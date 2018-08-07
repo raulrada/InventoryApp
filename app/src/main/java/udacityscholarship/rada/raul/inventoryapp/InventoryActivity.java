@@ -9,15 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.preference.ListPreference;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -134,7 +131,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         });
 
         // set action to be completed when the user clicks on the add_product button
-        addProductButton.setOnClickListener(new View.OnClickListener(){
+        addProductButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // intent to go to InsertProductActivity
@@ -247,49 +244,57 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      * Ask for user's confirmation that they want to delete this product.
      */
     private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_all_dialog_msg);
-        builder.setPositiveButton(R.string.delete_all, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Delete all products if user so chooses
-                deleteAllProducts();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel_all, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // User chose not to delete all products, so dismiss the dialog
-                if (dialog != null) {
-                    dialog.dismiss();
+        // Check if the products list is already empty
+        if(productCursorAdapter.getCount() == 0){
+            // let the user know there is nothing to delete
+            Toast.makeText(this, getString(R.string.nothing_to_delete),
+                    Toast.LENGTH_SHORT).show();
+        } else { // there are products in the database, which can be deleted
+            // Create an AlertDialog.Builder and set the message, and click listeners
+            // for the postivie and negative buttons on the dialog.
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.delete_all_dialog_msg);
+            builder.setPositiveButton(R.string.delete_all, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Delete all products if user so chooses
+                    deleteAllProducts();
                 }
-            }
-        });
+            });
+            builder.setNegativeButton(R.string.cancel_all, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // User chose not to delete all products, so dismiss the dialog
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            });
 
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+            // Create and show the AlertDialog
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
 
     /**
      * Method deleting all products in the database
      */
-    private void deleteAllProducts(){
-        int rowsDeleted = getContentResolver().delete(ProductContract.ProductEntry.CONTENT_URI,
-                null, null);
+    private void deleteAllProducts() {
+            // try to delete all items in the database
+            int rowsDeleted = getContentResolver().delete(ProductContract.ProductEntry.CONTENT_URI,
+                    null, null);
 
-        // Show a toast message depending on whether or not the delete was successful.
-        if (rowsDeleted == 0) {
-            // If no rows were deleted, then there was an error with the delete.
-            Toast.makeText(this, getString(R.string.database_delete_failure),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            // Otherwise, the delete was successful and we can display a toast.
-            Toast.makeText(this, getString(R.string.database_delete_successful),
-                    Toast.LENGTH_SHORT).show();
-        }
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, getString(R.string.database_delete_failure),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.database_delete_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
     }
 
     @Override
@@ -323,7 +328,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
 
         // Get the id of the last product in the database - useful when inserting dummmy products
         // Proceed with moving to the last row of the cursor and reading data from it
-        if (data.moveToLast()){
+        if (data.moveToLast()) {
             // Find the index of the id column of product attributes
             int idColumnIndex = data.getColumnIndex(
                     ProductContract.ProductEntry._ID);

@@ -2,23 +2,17 @@
 
 package udacityscholarship.rada.raul.inventoryapp;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
-import android.widget.SimpleCursorAdapter;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -730,7 +724,7 @@ public class InsertProductActivity extends AppCompatActivity implements
     /**
      * Method deleting the current product
      */
-    private void deleteProduct(){
+    private void deleteProduct() {
         // If the Delete button is visible, we know for sure that the user is in product info
         // display mode, and that {@link currentProductUri} is not null
         int rowsDeleted = getContentResolver().delete(currentProductUri,
@@ -817,5 +811,4 @@ public class InsertProductActivity extends AppCompatActivity implements
         // Show dialog that there are unsaved changes
         showUnsavedChangesDialog(discardButtonClickListener);
     }
-
 }
