@@ -69,7 +69,7 @@
     <string name="list_item_quantity">Quantity: %1$d</string>
 
     <!-- Text displayed in activity_inventory.xml when the database is empty -->
-    <string name="empty_text">The products database is currently empty.\nPlease add products using the options in the menu in the app bar.</string>
+    <string name="empty_text">The products database is currently empty.\nPlease add products using the options in the menu in the app bar or using the add button below.</string>
 
     <!-- Toast messages related to not being able to call the supplier of a product -->
     <string name="no_phone_app">It looks like your device does not have an app that can handle phone calls.</string>
