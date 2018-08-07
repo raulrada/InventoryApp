@@ -17,7 +17,7 @@ public final class ProductContract {
      * device. The String is hardcoded, as it does not need to be displayed to the user /
      * translated.
      */
-    public static final String CONTENT_AUTHORITY ="udacityscholarship.rada.raul.inventoryapp";
+    public static final String CONTENT_AUTHORITY = "udacityscholarship.rada.raul.inventoryapp";
 
     /**
      * Scheme part of the content URI
@@ -56,7 +56,9 @@ public final class ProductContract {
      */
     public static final class ProductEntry implements BaseColumns {
 
-        /** The content URI to access the product data in the provider */
+        /**
+         * The content URI to access the product data in the provider
+         */
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PRODUCTS);
 
         /**

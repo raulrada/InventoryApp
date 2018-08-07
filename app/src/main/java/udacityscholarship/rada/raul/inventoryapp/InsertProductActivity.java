@@ -708,7 +708,7 @@ public class InsertProductActivity extends AppCompatActivity implements
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Delete the pet if user so chooses
+                // Delete the product if user so chooses
                 deleteProduct();
             }
         });
@@ -727,6 +727,9 @@ public class InsertProductActivity extends AppCompatActivity implements
         alertDialog.show();
     }
 
+    /**
+     * Method deleting the current product
+     */
     private void deleteProduct(){
         // If the Delete button is visible, we know for sure that the user is in product info
         // display mode, and that {@link currentProductUri} is not null

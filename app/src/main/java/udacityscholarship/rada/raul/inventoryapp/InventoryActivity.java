@@ -2,8 +2,10 @@
 
 package udacityscholarship.rada.raul.inventoryapp;
 
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -219,6 +221,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
     public boolean onOptionsItemSelected(MenuItem item) {
         //determine what item was clicked by user and perform appropriate action
         switch (item.getItemId()) {
+            // The user chose the insert dummy products option:
             case R.id.action_insert_dummy_products:
                 // insert a number of dummy products
                 for (int i = lastProductId + POSITION_OFFSET;
@@ -231,8 +234,62 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                             PRODUCT_SUPPLIER_PHONE_NUMBER);
                 }
                 return true;
+
+            // The user chose the delete all products option:
+            case R.id.action_delete_all_products:
+                showDeleteConfirmationDialog();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Ask for user's confirmation that they want to delete this product.
+     */
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_all_dialog_msg);
+        builder.setPositiveButton(R.string.delete_all, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Delete all products if user so chooses
+                deleteAllProducts();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel_all, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User chose not to delete all products, so dismiss the dialog
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    /**
+     * Method deleting all products in the database
+     */
+    private void deleteAllProducts(){
+        int rowsDeleted = getContentResolver().delete(ProductContract.ProductEntry.CONTENT_URI,
+                null, null);
+
+        // Show a toast message depending on whether or not the delete was successful.
+        if (rowsDeleted == 0) {
+            // If no rows were deleted, then there was an error with the delete.
+            Toast.makeText(this, getString(R.string.database_delete_failure),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the delete was successful and we can display a toast.
+            Toast.makeText(this, getString(R.string.database_delete_successful),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -264,6 +321,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         // product data.
         productCursorAdapter.swapCursor(data);
 
+        // Get the id of the last product in the database - useful when inserting dummmy products
         // Proceed with moving to the last row of the cursor and reading data from it
         if (data.moveToLast()){
             // Find the index of the id column of product attributes
