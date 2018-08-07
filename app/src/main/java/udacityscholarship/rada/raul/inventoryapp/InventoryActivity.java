@@ -59,16 +59,23 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
      * Constant value for maximum quantity of a dummy product
      */
     private static final int PRODUCT_MAX_QUANTITY = 10;
-
     /**
      * Identifier for the product data loader
      */
     private static final int PRODUCT_LOADER = 0;
-
+    /**
+     * Constant value used as offset of the id of the last product in the database, used when
+     * inserting dummy products (in order to account for indexing starting at 0, and not at 1).
+     */
+    private static final int POSITION_OFFSET = 1;
     /**
      * Adapter for the ListView
      */
     ProductCursorAdapter productCursorAdapter;
+    /**
+     * ID of the last product in the database - useful when inserting dummy products.
+     */
+    private int lastProductId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,7 +221,8 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         switch (item.getItemId()) {
             case R.id.action_insert_dummy_products:
                 // insert a number of dummy products
-                for (int i = 0; i < MAX_DUMMY_PRODUCTS; i++) {
+                for (int i = lastProductId + POSITION_OFFSET;
+                     i < MAX_DUMMY_PRODUCTS + lastProductId + POSITION_OFFSET; i++) {
                     String productName = PRODUCT_NAME + i;
                     int productPrice = getRandomNumber(PRODUCT_MAX_PRICE);
                     int productQuantity = getRandomNumber(PRODUCT_MAX_QUANTITY);
@@ -255,6 +263,15 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         // Update the {@link ProductCursorAdapter} with this new cursor containing updated
         // product data.
         productCursorAdapter.swapCursor(data);
+
+        // Proceed with moving to the last row of the cursor and reading data from it
+        if (data.moveToLast()){
+            // Find the index of the id column of product attributes
+            int idColumnIndex = data.getColumnIndex(
+                    ProductContract.ProductEntry._ID);
+            // Get the ID of the last product in the database
+            lastProductId = data.getInt(idColumnIndex);
+        }
     }
 
     /**
